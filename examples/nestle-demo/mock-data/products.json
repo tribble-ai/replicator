@@ -1,0 +1,72 @@
+[
+  {
+    "sku": "NHS-001",
+    "name": "Boost Plus Vanilla 200ml",
+    "category": "Adult Nutrition",
+    "price": 2.49,
+    "margin": 0.32
+  },
+  {
+    "sku": "NHS-002",
+    "name": "Boost Plus Chocolate 200ml",
+    "category": "Adult Nutrition",
+    "price": 2.49,
+    "margin": 0.32
+  },
+  {
+    "sku": "NHS-003",
+    "name": "Boost Glucose Control",
+    "category": "Adult Nutrition",
+    "price": 2.99,
+    "margin": 0.35
+  },
+  {
+    "sku": "NHS-004",
+    "name": "Resource Protein Drink",
+    "category": "Adult Nutrition",
+    "price": 2.79,
+    "margin": 0.33
+  },
+  {
+    "sku": "NHS-101",
+    "name": "Immunity+ Daily Support",
+    "category": "Immunity",
+    "price": 12.99,
+    "margin": 0.42
+  },
+  {
+    "sku": "NHS-102",
+    "name": "Immunity+ Kids Gummies",
+    "category": "Immunity",
+    "price": 9.99,
+    "margin": 0.4
+  },
+  {
+    "sku": "NHS-103",
+    "name": "Immunity+ Elderberry Syrup",
+    "category": "Immunity",
+    "price": 14.99,
+    "margin": 0.45
+  },
+  {
+    "sku": "NHS-201",
+    "name": "Vitality Multi-Vitamin",
+    "category": "Vitamins",
+    "price": 8.99,
+    "margin": 0.38
+  },
+  {
+    "sku": "NHS-202",
+    "name": "Vitamin D3 1000IU",
+    "category": "Vitamins",
+    "price": 6.99,
+    "margin": 0.36
+  },
+  {
+    "sku": "NHS-203",
+    "name": "Omega-3 Fish Oil",
+    "category": "Vitamins",
+    "price": 11.99,
+    "margin": 0.4
+  }
+]

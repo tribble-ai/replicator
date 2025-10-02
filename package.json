@@ -1,0 +1,20 @@
+{
+  "name": "tribble-sdk-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run -w @tribble/sdk-core build && npm run -w @tribble/sdk-agent build && npm run -w @tribble/sdk-chat build && npm run -w @tribble/sdk-ingest build && npm run -w @tribble/sdk-docs build && npm run -w @tribble/sdk-workflows build && npm run -w @tribble/sdk-events build && npm run -w @tribble/sdk-actions build && npm run -w @tribble/sdk-connectors build && npm run -w @tribble/sdk-auth build && npm run -w @tribble/sdk-queue build && npm run -w @tribble/sdk-render build && npm run -w @tribble/sdk build && npm run -w @tribble/sdk-cli build",
+    "clean": "rm -rf packages/*/dist",
+    "format": "prettier . --write"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "tsup": "^8.2.4",
+    "typescript": "^5.6.2"
+  },
+  "packageManager": "npm@10"
+}

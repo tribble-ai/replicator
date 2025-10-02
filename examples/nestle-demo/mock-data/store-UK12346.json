@@ -1,0 +1,510 @@
+{
+  "profile": {
+    "storeId": "UK12346",
+    "name": "Boots Liverpool One",
+    "retailer": "Boots",
+    "format": "Flagship",
+    "city": "Liverpool",
+    "region": "North West",
+    "postcode": "L1 8JQ",
+    "size": "Large",
+    "footfall": "Very High",
+    "demographics": "Urban, Young Professionals, ABC1",
+    "storeManager": "Sarah Mitchell",
+    "managerPreferences": "Innovation-focused, promotional activity",
+    "categorySpace": {
+      "adultNutrition": 18,
+      "immunity": 15,
+      "vitamins": 20
+    }
+  },
+  "exceedraVisits": [
+    {
+      "visitId": "VIS-UK12346-003",
+      "storeId": "UK12346",
+      "visitDate": "2025-07-29",
+      "kamEmail": "sarah.williams@nestle.com",
+      "kamName": "Sarah Williams",
+      "duration": 60,
+      "objectives": [
+        "Review category performance",
+        "Resolve OOS issues",
+        "Optimize shelf positioning"
+      ],
+      "actionsCompleted": [
+        {
+          "action": "Repositioned Adult Nutrition to eye-level shelf",
+          "outcome": "Improved visibility, manager noted positive customer feedback",
+          "followUp": null
+        }
+      ],
+      "issuesIdentified": [],
+      "storeCondition": {
+        "cleanliness": "Good",
+        "stockLevels": "Good",
+        "merchandising": "Excellent"
+      },
+      "managerFeedback": "Happy with category performance, wants to expand immunity range",
+      "nextSteps": [
+        "Monitor OOS situations",
+        "Review sales impact of recent changes"
+      ]
+    },
+    {
+      "visitId": "VIS-UK12346-002",
+      "storeId": "UK12346",
+      "visitDate": "2025-08-19",
+      "kamEmail": "sarah.williams@nestle.com",
+      "kamName": "Sarah Williams",
+      "duration": 45,
+      "objectives": [
+        "Introduce Q4 Immunity campaign",
+        "Resolve OOS issues",
+        "Optimize shelf positioning"
+      ],
+      "actionsCompleted": [
+        {
+          "action": "Set up Q4 Immunity POS display in health aisle",
+          "outcome": "Display live, manager positive on initial customer interest",
+          "followUp": null
+        }
+      ],
+      "issuesIdentified": [
+        {
+          "issue": "Boost Plus Vanilla OOS for 3 days",
+          "severity": "High",
+          "resolution": "Ordered emergency stock"
+        }
+      ],
+      "storeCondition": {
+        "cleanliness": "Good",
+        "stockLevels": "Fair",
+        "merchandising": "Excellent"
+      },
+      "managerFeedback": "Concerned about stock availability, pleased with campaign materials",
+      "nextSteps": [
+        "Monitor OOS situations",
+        "Review sales impact of recent changes"
+      ]
+    },
+    {
+      "visitId": "VIS-UK12346-001",
+      "storeId": "UK12346",
+      "visitDate": "2025-09-09",
+      "kamEmail": "sarah.williams@nestle.com",
+      "kamName": "Sarah Williams",
+      "duration": 69,
+      "objectives": [
+        "Check winter display execution",
+        "Resolve OOS issues",
+        "Optimize shelf positioning"
+      ],
+      "actionsCompleted": [
+        {
+          "action": "Secured agreement for 2x additional facings on Immunity+ range",
+          "outcome": "Manager committed to implementation by next visit",
+          "followUp": "Verify display execution and track sales impact"
+        }
+      ],
+      "issuesIdentified": [],
+      "storeCondition": {
+        "cleanliness": "Good",
+        "stockLevels": "Good",
+        "merchandising": "Excellent"
+      },
+      "managerFeedback": "Very receptive to data-driven suggestions",
+      "nextSteps": [
+        "Follow up on winter display execution",
+        "Monitor OOS situations",
+        "Review sales impact of recent changes"
+      ]
+    }
+  ],
+  "sapSales": {
+    "storeId": "UK12346",
+    "reportDate": "2025-09-30",
+    "period": "90 days",
+    "categorySales": [
+      {
+        "category": "Adult Nutrition",
+        "revenue": 18431,
+        "units": 2168,
+        "growth": 0.08,
+        "vsTerritory": 0.02,
+        "share": 0.42
+      },
+      {
+        "category": "Immunity",
+        "revenue": 24584,
+        "units": 2892,
+        "growth": 0.12,
+        "vsTerritory": 0.05,
+        "share": 0.35
+      },
+      {
+        "category": "Vitamins",
+        "revenue": 17561,
+        "units": 2066,
+        "growth": 0.03,
+        "vsTerritory": -0.01,
+        "share": 0.23
+      }
+    ],
+    "skuPerformance": [
+      {
+        "sku": "NHS-001",
+        "name": "Boost Plus Vanilla 200ml",
+        "category": "Adult Nutrition",
+        "unitsSold": 392,
+        "revenue": 975,
+        "growth": 0.15,
+        "oosIncidents": 2,
+        "avgPrice": 2.49,
+        "priceVsTerritory": -0.013264949116818837
+      },
+      {
+        "sku": "NHS-002",
+        "name": "Boost Plus Chocolate 200ml",
+        "category": "Adult Nutrition",
+        "unitsSold": 463,
+        "revenue": 1154,
+        "growth": -0.016826463608589397,
+        "oosIncidents": 1,
+        "avgPrice": 2.49,
+        "priceVsTerritory": -0.034843494058451885
+      },
+      {
+        "sku": "NHS-003",
+        "name": "Boost Glucose Control",
+        "category": "Adult Nutrition",
+        "unitsSold": 414,
+        "revenue": 1237,
+        "growth": 0.014513353554118775,
+        "oosIncidents": 0,
+        "avgPrice": 2.99,
+        "priceVsTerritory": -0.022658918624732863
+      },
+      {
+        "sku": "NHS-004",
+        "name": "Resource Protein Drink",
+        "category": "Adult Nutrition",
+        "unitsSold": 457,
+        "revenue": 1274,
+        "growth": 0.15,
+        "oosIncidents": 1,
+        "avgPrice": 2.79,
+        "priceVsTerritory": 0.001873476791584075
+      },
+      {
+        "sku": "NHS-101",
+        "name": "Immunity+ Daily Support",
+        "category": "Immunity",
+        "unitsSold": 325,
+        "revenue": 4222,
+        "growth": 0.03725575938459842,
+        "oosIncidents": 0,
+        "avgPrice": 12.99,
+        "priceVsTerritory": 0.040974184932166965
+      },
+      {
+        "sku": "NHS-102",
+        "name": "Immunity+ Kids Gummies",
+        "category": "Immunity",
+        "unitsSold": 331,
+        "revenue": 3304,
+        "growth": 0.02767632138548792,
+        "oosIncidents": 0,
+        "avgPrice": 9.99,
+        "priceVsTerritory": -0.024139959568943416
+      },
+      {
+        "sku": "NHS-103",
+        "name": "Immunity+ Elderberry Syrup",
+        "category": "Immunity",
+        "unitsSold": 389,
+        "revenue": 5826,
+        "growth": 0.15,
+        "oosIncidents": 0,
+        "avgPrice": 14.99,
+        "priceVsTerritory": 0.0059808464115815654
+      },
+      {
+        "sku": "NHS-201",
+        "name": "Vitality Multi-Vitamin",
+        "category": "Vitamins",
+        "unitsSold": 321,
+        "revenue": 2884,
+        "growth": 0.07355146263755274,
+        "oosIncidents": 0,
+        "avgPrice": 8.99,
+        "priceVsTerritory": 0.04638946467185737
+      },
+      {
+        "sku": "NHS-202",
+        "name": "Vitamin D3 1000IU",
+        "category": "Vitamins",
+        "unitsSold": 415,
+        "revenue": 2897,
+        "growth": 0.001674875317791244,
+        "oosIncidents": 1,
+        "avgPrice": 6.99,
+        "priceVsTerritory": 0.018127599582302673
+      },
+      {
+        "sku": "NHS-203",
+        "name": "Omega-3 Fish Oil",
+        "category": "Vitamins",
+        "unitsSold": 466,
+        "revenue": 5591,
+        "growth": 0.15,
+        "oosIncidents": 1,
+        "avgPrice": 11.99,
+        "priceVsTerritory": -0.007592113755971776
+      }
+    ],
+    "territoryComparison": {}
+  },
+  "powerBIDashboard": {
+    "storeId": "UK12346",
+    "period": "12 months",
+    "trend": [
+      {
+        "month": "2024-10",
+        "totalRevenue": 24353,
+        "totalUnits": 2647,
+        "adultNutritionRevenue": 10228,
+        "immunityRevenue": 8524,
+        "vitaminsRevenue": 5601,
+        "footfall": 14702,
+        "conversionRate": 0.214621555971762
+      },
+      {
+        "month": "2024-11",
+        "totalRevenue": 29652,
+        "totalUnits": 3223,
+        "adultNutritionRevenue": 12454,
+        "immunityRevenue": 10378,
+        "vitaminsRevenue": 6820,
+        "footfall": 13057,
+        "conversionRate": 0.18783223218776635
+      },
+      {
+        "month": "2024-12",
+        "totalRevenue": 31180,
+        "totalUnits": 3389,
+        "adultNutritionRevenue": 13096,
+        "immunityRevenue": 10913,
+        "vitaminsRevenue": 7171,
+        "footfall": 13079,
+        "conversionRate": 0.2096080426736771
+      },
+      {
+        "month": "2025-01",
+        "totalRevenue": 18409,
+        "totalUnits": 2001,
+        "adultNutritionRevenue": 7732,
+        "immunityRevenue": 6443,
+        "vitaminsRevenue": 4234,
+        "footfall": 12157,
+        "conversionRate": 0.21324672393657793
+      },
+      {
+        "month": "2025-03",
+        "totalRevenue": 22439,
+        "totalUnits": 2439,
+        "adultNutritionRevenue": 9424,
+        "immunityRevenue": 7854,
+        "vitaminsRevenue": 5161,
+        "footfall": 14022,
+        "conversionRate": 0.21287776988228463
+      },
+      {
+        "month": "2025-03",
+        "totalRevenue": 20555,
+        "totalUnits": 2234,
+        "adultNutritionRevenue": 8633,
+        "immunityRevenue": 7194,
+        "vitaminsRevenue": 4728,
+        "footfall": 14502,
+        "conversionRate": 0.2223957291995508
+      },
+      {
+        "month": "2025-04",
+        "totalRevenue": 25937,
+        "totalUnits": 2819,
+        "adultNutritionRevenue": 10894,
+        "immunityRevenue": 9078,
+        "vitaminsRevenue": 5966,
+        "footfall": 14928,
+        "conversionRate": 0.22277521861697813
+      },
+      {
+        "month": "2025-05",
+        "totalRevenue": 27093,
+        "totalUnits": 2945,
+        "adultNutritionRevenue": 11379,
+        "immunityRevenue": 9482,
+        "vitaminsRevenue": 6231,
+        "footfall": 12103,
+        "conversionRate": 0.2259133688095701
+      },
+      {
+        "month": "2025-06",
+        "totalRevenue": 23840,
+        "totalUnits": 2591,
+        "adultNutritionRevenue": 10013,
+        "immunityRevenue": 8344,
+        "vitaminsRevenue": 5483,
+        "footfall": 14702,
+        "conversionRate": 0.21168911565566034
+      },
+      {
+        "month": "2025-07",
+        "totalRevenue": 23357,
+        "totalUnits": 2539,
+        "adultNutritionRevenue": 9810,
+        "immunityRevenue": 8175,
+        "vitaminsRevenue": 5372,
+        "footfall": 13997,
+        "conversionRate": 0.20282580066641692
+      },
+      {
+        "month": "2025-08",
+        "totalRevenue": 24166,
+        "totalUnits": 2627,
+        "adultNutritionRevenue": 10150,
+        "immunityRevenue": 8458,
+        "vitaminsRevenue": 5558,
+        "footfall": 12507,
+        "conversionRate": 0.20176956456048278
+      },
+      {
+        "month": "2025-09",
+        "totalRevenue": 21233,
+        "totalUnits": 2308,
+        "adultNutritionRevenue": 8918,
+        "immunityRevenue": 7432,
+        "vitaminsRevenue": 4884,
+        "footfall": 12418,
+        "conversionRate": 0.18160093951736414
+      }
+    ],
+    "kpis": {
+      "avgMonthlyRevenue": 24351,
+      "yoyGrowth": 0.08,
+      "categoryMix": {
+        "adultNutrition": 0.42,
+        "immunity": 0.35,
+        "vitamins": 0.23
+      }
+    }
+  },
+  "similarStoreSuccesses": [
+    {
+      "storeId": "UK12345",
+      "storeName": "Tesco Extra Manchester Arndale",
+      "similarity": 0.9224577495318983,
+      "matchFactors": [
+        "Region",
+        "Store Format"
+      ],
+      "successAction": "Implemented Immunity+ end-cap display with educational materials",
+      "period": "4 weeks",
+      "results": {
+        "categoryLift": 0.11,
+        "unitIncrease": 245,
+        "revenueIncrease": 2150
+      },
+      "replicability": "High",
+      "notes": "Store manager credits clear POS and staff training"
+    },
+    {
+      "storeId": "UK12347",
+      "storeName": "Superdrug Manchester Market Street",
+      "similarity": 0.8906820279274229,
+      "matchFactors": [
+        "Region",
+        "Store Format",
+        "Demographics"
+      ],
+      "successAction": "Ran 3-for-2 promotion on Adult Nutrition range",
+      "period": "4 weeks",
+      "results": {
+        "categoryLift": 0.09,
+        "unitIncrease": 189,
+        "revenueIncrease": 1680
+      },
+      "replicability": "Medium",
+      "notes": "Price sensitivity observed, consider value messaging"
+    },
+    {
+      "storeId": "UK12349",
+      "storeName": "Boots Leeds Trinity",
+      "similarity": 0.8611674643031475,
+      "matchFactors": [
+        "Region",
+        "Store Format",
+        "Demographics"
+      ],
+      "successAction": "Repositioned vitamins to seasonal display area",
+      "period": "4 weeks",
+      "results": {
+        "categoryLift": 0.15,
+        "unitIncrease": 312,
+        "revenueIncrease": 2890
+      },
+      "replicability": "High",
+      "notes": "Seasonal timing (winter) was key factor"
+    }
+  ],
+  "competitorIntel": [
+    {
+      "retailer": "Tesco",
+      "weekCommencing": "2025-09-30",
+      "promotions": [
+        {
+          "category": "Adult Nutrition",
+          "offer": "Buy 2 Get 1 Free on competing brand",
+          "duration": "2 weeks",
+          "threat": "Medium",
+          "suggestedResponse": "Highlight superior taste and NHS recommendation in POS"
+        },
+        {
+          "category": "Immunity",
+          "offer": "£3 off Vitamin C 1000mg tablets",
+          "duration": "1 week",
+          "threat": "Low",
+          "suggestedResponse": "Cross-promote with winter wellness messaging"
+        }
+      ],
+      "newProducts": [
+        "Generic immunity gummies launched"
+      ],
+      "outOfStock": []
+    },
+    {
+      "retailer": "Superdrug",
+      "weekCommencing": "2025-09-30",
+      "promotions": [
+        {
+          "category": "Adult Nutrition",
+          "offer": "20% off own-label nutrition drinks",
+          "duration": "2 weeks",
+          "threat": "Medium",
+          "suggestedResponse": "Emphasize premium quality and clinical backing"
+        },
+        {
+          "category": "Immunity",
+          "offer": "Elderberry syrup on rollback",
+          "duration": "1 week",
+          "threat": "Low",
+          "suggestedResponse": "Cross-promote with winter wellness messaging"
+        }
+      ],
+      "newProducts": [],
+      "outOfStock": [
+        "Competitor premium nutrition drink range"
+      ]
+    }
+  ]
+}

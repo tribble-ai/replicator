@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nestlé KAM Intelligence - Powered by Tribble Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .scenario {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .scenario h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .store-selector {
+            margin-bottom: 30px;
+        }
+
+        .store-selector label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .store-selector select {
+            width: 100%;
+            padding: 15px;
+            font-size: 1em;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .store-selector select:hover {
+            border-color: #667eea;
+        }
+
+        .store-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        .action-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .status.visible {
+            display: block;
+        }
+
+        .status h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .log-container {
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .log-entry.success {
+            color: #28a745;
+        }
+
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results.visible {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .brief-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .brief-content h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .brief-content h2 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .brief-content h3 {
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .brief-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .brief-content table th,
+        .brief-content table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .brief-content table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .alert-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .onepager {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .onepager h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .onepager h2 {
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .onepager-meta {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .action-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Nestlé KAM Intelligence Agent</h1>
+            <p>Powered by Tribble Platform - Connected Intelligence System</p>
+        </div>
+
+        <div class="main-card">
+            <div class="scenario">
+                <h3>📍 Demo Scenario</h3>
+                <p><strong>Sarah Williams</strong>, KAM for Greater Manchester, has a store visit tomorrow. Traditionally, she'd spend <strong>45 minutes</strong> manually gathering data from Exceedra, SAP, and Power BI.</p>
+                <p style="margin-top: 10px;"><strong>With Tribble Platform:</strong> She asks one question, and Tribble autonomously queries all systems, finds similar store patterns, and generates actionable intelligence in <strong>20 seconds</strong>.</p>
+            </div>
+
+            <div class="store-selector">
+                <label for="storeSelect">🏪 Select Store for Visit Prep:</label>
+                <select id="storeSelect">
+                    <option value="">Loading stores...</option>
+                </select>
+            </div>
+
+            <button class="action-button" id="prepButton" disabled>
+                Generate Intelligence Brief
+            </button>
+
+            <div class="status" id="statusContainer">
+                <h3>⚡ Tribble Platform Working...</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="log-container" id="logContainer"></div>
+            </div>
+
+            <div class="results" id="resultsContainer">
+                <div class="tabs">
+                    <button class="tab active" data-tab="brief">📄 Full Brief</button>
+                    <button class="tab" data-tab="onepager">📱 Mobile One-Pager</button>
+                    <button class="tab" data-tab="json">🔧 JSON Data</button>
+                </div>
+
+                <div class="tab-content active" id="brief-tab">
+                    <div class="brief-content" id="briefContent"></div>
+                </div>
+
+                <div class="tab-content" id="onepager-tab">
+                    <div class="onepager" id="onepagerContent"></div>
+                </div>
+
+                <div class="tab-content" id="json-tab">
+                    <div class="brief-content">
+                        <pre id="jsonContent" style="background: #f8f9fa; padding: 20px; border-radius: 8px; overflow-x: auto;"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        let currentJobId = null;
+
+        // Load stores on page load
+        async function loadStores() {
+            try {
+                const response = await fetch('/stores');
+                const data = await response.json();
+                const select = document.getElementById('storeSelect');
+                select.innerHTML = '<option value="">Choose a store...</option>';
+                data.stores.forEach(store => {
+                    const option = document.createElement('option');
+                    option.value = store.storeId;
+                    option.textContent = `${store.name} - ${store.retailer} (${store.storeId})`;
+                    select.appendChild(option);
+                });
+                document.getElementById('prepButton').disabled = false;
+            } catch (error) {
+                console.error('Error loading stores:', error);
+                alert('Error loading stores. Please refresh the page.');
+            }
+        }
+
+        // Start intelligence prep
+        document.getElementById('prepButton').addEventListener('click', async function() {
+            const storeId = document.getElementById('storeSelect').value;
+            if (!storeId) {
+                alert('Please select a store first');
+                return;
+            }
+
+            // Reset UI
+            document.getElementById('statusContainer').classList.add('visible');
+            document.getElementById('resultsContainer').classList.remove('visible');
+            document.getElementById('logContainer').innerHTML = '';
+            document.getElementById('progressFill').style.width = '0%';
+            this.disabled = true;
+
+            try {
+                // Start job
+                const response = await fetch('/kam/prep/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        storeId: storeId,
+                        kamEmail: 'sarah.williams@nestle.com',
+                        visitType: 'routine'
+                    })
+                });
+
+                const data = await response.json();
+                currentJobId = data.jobId;
+
+                addLog(`✓ Job started for ${data.storeName}`);
+                addLog('⚡ Tribble Agent querying Exceedra, SAP, Power BI...');
+
+                // Poll for status
+                pollJobStatus(currentJobId);
+
+            } catch (error) {
+                console.error('Error starting job:', error);
+                alert('Error starting intelligence prep');
+                this.disabled = false;
+            }
+        });
+
+        // Poll job status
+        async function pollJobStatus(jobId) {
+            try {
+                const response = await fetch(`/kam/prep/${jobId}/status`);
+                const data = await response.json();
+
+                // Update progress
+                const totalProgress = (data.progress.collection + data.progress.analysis +
+                                     data.progress.generation + data.progress.artifacts) / 4;
+                document.getElementById('progressFill').style.width = totalProgress + '%';
+
+                // Add new logs
+                data.logs.forEach(log => {
+                    if (!document.querySelector(`[data-log="${log}"]`)) {
+                        addLog(log, log.includes('✓'));
+                    }
+                });
+
+                if (data.status === 'completed') {
+                    addLog('✅ Intelligence brief ready!', true);
+                    setTimeout(() => loadResults(jobId), 500);
+                } else if (data.status === 'failed') {
+                    addLog('❌ Job failed', false);
+                    document.getElementById('prepButton').disabled = false;
+                } else {
+                    // Continue polling
+                    setTimeout(() => pollJobStatus(jobId), 500);
+                }
+
+            } catch (error) {
+                console.error('Error polling job:', error);
+            }
+        }
+
+        // Add log entry
+        function addLog(message, isSuccess = false) {
+            const container = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry' + (isSuccess ? ' success' : '');
+            entry.textContent = message;
+            entry.setAttribute('data-log', message);
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Load results
+        async function loadResults(jobId) {
+            try {
+                // Load markdown brief
+                const briefResponse = await fetch(`/kam/prep/${jobId}/artifact/markdown`);
+                const briefText = await briefResponse.text();
+                document.getElementById('briefContent').innerHTML = marked.parse(briefText);
+
+                // Load one-pager
+                const onepagerResponse = await fetch(`/kam/prep/${jobId}/artifact/onepager`);
+                const onepagerText = await onepagerResponse.text();
+                document.getElementById('onepagerContent').innerHTML = marked.parse(onepagerText);
+
+                // Load JSON
+                const jsonResponse = await fetch(`/kam/prep/${jobId}/result`);
+                const jsonData = await jsonResponse.json();
+                document.getElementById('jsonContent').textContent = JSON.stringify(jsonData, null, 2);
+
+                // Show results
+                document.getElementById('statusContainer').classList.remove('visible');
+                document.getElementById('resultsContainer').classList.add('visible');
+                document.getElementById('prepButton').disabled = false;
+
+            } catch (error) {
+                console.error('Error loading results:', error);
+                alert('Error loading results');
+            }
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+
+                // Update active tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update active content
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(tabName + '-tab').classList.add('active');
+            });
+        });
+
+        // Initialize
+        loadStores();
+    </script>
+</body>
+</html>

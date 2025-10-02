@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tribble">
+    <meta name="theme-color" content="#007AFF">
+    <meta name="description" content="AI-powered field sales intelligence for Nestlé KAMs">
+
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <title>Tribble · Visit Prep</title>
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-gray: #8E8E93;
+            --ios-gray-2: #AEAEB2;
+            --ios-gray-3: #C7C7CC;
+            --ios-gray-4: #D1D1D6;
+            --ios-gray-5: #E5E5EA;
+            --ios-gray-6: #F2F2F7;
+            --ios-bg: #000000;
+            --ios-bg-secondary: #1C1C1E;
+            --ios-bg-tertiary: #2C2C2E;
+            --card-bg: #1C1C1E;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --divider: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+            background: var(--ios-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* iPhone Frame - Only on Desktop */
+        .phone-frame {
+            width: 100%;
+            height: 100vh;
+            background: var(--ios-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Desktop-only mockup styling */
+        @media (min-width: 768px) {
+            body {
+                background: #1a1a1a;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+            }
+
+            .phone-frame {
+                width: 390px;
+                height: 844px;
+                margin: 20px auto;
+                background: #000;
+                border-radius: 55px;
+                padding: 20px 12px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.8),
+                            0 0 0 12px #1a1a1a,
+                            0 0 0 14px #0a0a0a;
+            }
+
+            .phone-frame::before {
+                content: '';
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 150px;
+                height: 30px;
+                background: #000;
+                border-radius: 0 0 20px 20px;
+                z-index: 1000;
+            }
+
+            .phone-content {
+                border-radius: 45px;
+            }
+        }
+
+        .phone-content {
+            width: 100%;
+            height: 100%;
+            background: var(--ios-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Mobile-specific: Use safe area insets */
+        @media (max-width: 767px) {
+            .phone-content {
+                padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            }
+
+            .status-bar {
+                padding-top: max(14px, env(safe-area-inset-top));
+            }
+        }
+
+        .phone-scroll {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 90px;
+        }
+
+        /* Status Bar - Only show on desktop mockup */
+        .status-bar {
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            padding-top: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .time {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        /* Hide status bar on real mobile devices */
+        @media (max-width: 767px) {
+            .status-bar {
+                display: none;
+            }
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 20px 16px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .greeting {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -0.6px;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .subheading {
+            font-size: 17px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+
+        .date-line {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Today's Visits */
+        .section {
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-count {
+            font-size: 17px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Visit Cards */
+        .visit-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visit-card:active {
+            transform: scale(0.98);
+        }
+
+        .visit-time {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ios-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .visit-store-name {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            margin-bottom: 4px;
+        }
+
+        .visit-meta {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .visit-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .visit-status.ready {
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--ios-green);
+        }
+
+        .visit-status.pending {
+            background: rgba(255, 149, 0, 0.15);
+            color: var(--ios-orange);
+        }
+
+        .visit-quick-stats {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--divider);
+        }
+
+        .quick-stat {
+            flex: 1;
+        }
+
+        .quick-stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .quick-stat-value {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .quick-stat-value.positive {
+            color: var(--ios-green);
+        }
+
+        .quick-stat-value.negative {
+            color: var(--ios-red);
+        }
+
+        /* Action Button */
+        .action-button {
+            width: 100%;
+            padding: 16px;
+            background: var(--ios-blue);
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .action-button:active {
+            transform: scale(0.98);
+            opacity: 0.8;
+        }
+
+        /* Brief View (Full Screen) */
+        .brief-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--ios-bg);
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .brief-overlay.visible {
+            transform: translateY(0);
+        }
+
+        .brief-header {
+            height: 54px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            padding-top: 14px;
+            border-bottom: 1px solid var(--divider);
+            background: var(--ios-bg);
+            backdrop-filter: blur(20px);
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--ios-blue);
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+
+        .brief-scroll-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .brief-content {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .brief-hero {
+            margin-bottom: 24px;
+        }
+
+        .brief-store-name {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .brief-store-meta {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        .brief-summary-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .summary-text {
+            font-size: 17px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .metric-change {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .metric-change.up {
+            color: var(--ios-green);
+        }
+
+        /* Actions Section */
+        .actions-section {
+            margin-bottom: 24px;
+        }
+
+        .action-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .action-priority {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .action-priority.high {
+            background: rgba(255, 59, 48, 0.15);
+        }
+
+        .action-priority.medium {
+            background: rgba(255, 149, 0, 0.15);
+        }
+
+        .action-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .action-impact {
+            font-size: 15px;
+            color: var(--ios-green);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .action-evidence {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Alert Badge */
+        .alert-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 59, 48, 0.15);
+            color: var(--ios-red);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        /* Teams Integration Buttons */
+        .teams-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .teams-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--divider);
+            background: transparent;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ios-blue);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .teams-btn:active {
+            transform: scale(0.97);
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .teams-btn.secondary {
+            color: var(--text-secondary);
+        }
+
+        .metric-card-actions {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--divider);
+        }
+
+        .ask-btn {
+            width: 100%;
+            padding: 8px 12px;
+            background: transparent;
+            border: 1px solid var(--divider);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ios-blue);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .ask-btn:active {
+            transform: scale(0.97);
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.visible {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--divider);
+            border-top-color: var(--ios-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 17px;
+            color: var(--text-secondary);
+        }
+
+        .loading-subtext {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 280px;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Haptic Feedback Simulation */
+        .haptic-light:active {
+            animation: hapticLight 0.1s;
+        }
+
+        @keyframes hapticLight {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.99); }
+        }
+
+        /* Bottom Tab Bar */
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--divider);
+            display: flex;
+            padding-top: 8px;
+            z-index: 100;
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-item.active {
+            color: var(--ios-blue);
+        }
+
+        .tab-icon {
+            font-size: 24px;
+        }
+
+        /* Tab Content Views */
+        .tab-content {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 90px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Territory View */
+        .territory-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .territory-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .territory-subtitle {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .stat-change {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .store-list {
+            padding: 0 20px 20px;
+        }
+
+        .store-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .store-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .store-name {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .store-badge {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .store-badge.excellent { background: rgba(52, 199, 89, 0.15); color: var(--ios-green); }
+        .store-badge.good { background: rgba(0, 122, 255, 0.15); color: var(--ios-blue); }
+        .store-badge.needs-attention { background: rgba(255, 149, 0, 0.15); color: var(--ios-orange); }
+
+        .store-metrics {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .store-metric-value {
+            font-weight: 600;
+        }
+
+        /* Actions View */
+        .action-filter-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 16px 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--divider);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active {
+            background: var(--ios-blue);
+            color: white;
+            border-color: var(--ios-blue);
+        }
+
+        .action-list {
+            padding: 0 20px 20px;
+        }
+
+        .action-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 3px solid transparent;
+        }
+
+        .action-item.high { border-left-color: var(--ios-red); }
+        .action-item.medium { border-left-color: var(--ios-orange); }
+        .action-item.completed { opacity: 0.6; }
+
+        .action-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .action-item-title {
+            font-size: 17px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .action-checkbox {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--divider);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .action-checkbox.checked {
+            background: var(--ios-green);
+            border-color: var(--ios-green);
+        }
+
+        .action-item-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .action-due {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .action-due.overdue { color: var(--ios-red); }
+
+        /* Chat Interface */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px;
+        }
+
+        .chat-message {
+            margin-bottom: 16px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .message-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .message-avatar.tribble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .message-avatar.user {
+            background: var(--ios-gray-3);
+            color: var(--ios-bg);
+        }
+
+        .message-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.4;
+            max-width: 85%;
+        }
+
+        .chat-message.tribble .message-bubble {
+            background: var(--card-bg);
+            margin-left: 36px;
+        }
+
+        .chat-message.user {
+            text-align: right;
+        }
+
+        .chat-message.user .message-header {
+            flex-direction: row-reverse;
+        }
+
+        .chat-message.user .message-bubble {
+            background: var(--ios-blue);
+            margin-left: auto;
+            margin-right: 36px;
+        }
+
+        .chat-input-container {
+            padding: 12px 20px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            background: var(--ios-bg);
+            border-top: 1px solid var(--divider);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--divider);
+            border-radius: 20px;
+            padding: 10px 16px;
+            font-size: 15px;
+            color: var(--text-primary);
+            font-family: inherit;
+            resize: none;
+            max-height: 100px;
+            min-height: 40px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--ios-blue);
+        }
+
+        .chat-send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--ios-blue);
+            border: none;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .chat-send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+        }
+
+        .suggested-questions {
+            padding: 16px 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .suggested-questions-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .suggested-question {
+            background: var(--card-bg);
+            border: 1px solid var(--divider);
+            border-radius: 16px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggested-question:active {
+            transform: scale(0.98);
+            background: var(--ios-bg-tertiary);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-content" id="phoneContent">
+            <!-- Today Tab Content -->
+            <div class="tab-content active" id="todayTab">
+                <div class="phone-scroll">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="time">9:15</div>
+                <div class="status-icons">
+                    <span>📶</span>
+                    <span>📡</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <div class="header">
+                <div class="header-top">
+                    <div class="greeting">Good morning</div>
+                    <div class="profile-pic">SW</div>
+                </div>
+                <div class="subheading">Sarah Williams · North West Territory</div>
+                <div class="date-line">Monday, 30 September</div>
+            </div>
+
+            <!-- Today's Visits Section -->
+            <div class="section">
+                <div class="section-title">
+                    <span>Today's Visits</span>
+                    <span class="section-count">3 stores</span>
+                </div>
+
+                <!-- Visit Card 1 - Ready -->
+                <div class="visit-card haptic-light" data-store-id="UK12345" onclick="showBrief('UK12345')">
+                    <div class="visit-time">10:00 AM</div>
+                    <div class="visit-store-name">Tesco Extra Manchester Arndale</div>
+                    <div class="visit-meta">David Thompson · Tesco Extra</div>
+                    <div class="visit-status ready">
+                        <span>✓</span>
+                        <span>Brief Ready</span>
+                    </div>
+                    <div class="visit-quick-stats">
+                        <div class="quick-stat">
+                            <div class="quick-stat-label">Immunity</div>
+                            <div class="quick-stat-value positive">+12%</div>
+                        </div>
+                        <div class="quick-stat">
+                            <div class="quick-stat-label">Last Visit</div>
+                            <div class="quick-stat-value">2 months ago</div>
+                        </div>
+                        <div class="quick-stat">
+                            <div class="quick-stat-label">Actions</div>
+                            <div class="quick-stat-value">4 ready</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visit Card 2 - Pending -->
+                <div class="visit-card haptic-light" data-store-id="UK12346" onclick="generateBrief('UK12346')">
+                    <div class="visit-time">2:30 PM</div>
+                    <div class="visit-store-name">Boots Liverpool One</div>
+                    <div class="visit-meta">Sarah Mitchell · Boots Flagship</div>
+                    <div class="visit-status pending">
+                        <span>⏱</span>
+                        <span>Tap to prep</span>
+                    </div>
+                </div>
+
+                <!-- Visit Card 3 - Pending -->
+                <div class="visit-card haptic-light" data-store-id="UK12347" onclick="generateBrief('UK12347')">
+                    <div class="visit-time">4:45 PM</div>
+                    <div class="visit-store-name">Superdrug Manchester Market Street</div>
+                    <div class="visit-meta">James Parker · Superdrug Standard</div>
+                    <div class="visit-status pending">
+                        <span>⏱</span>
+                        <span>Tap to prep</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spacer for tab bar -->
+            <div style="height: 20px;"></div>
+                </div>
+            </div>
+
+            <!-- Territory Tab Content -->
+            <div class="tab-content" id="territoryTab">
+                <div class="territory-header">
+                    <div class="territory-title">North West Territory</div>
+                    <div class="territory-subtitle">Sarah Williams · 24 Stores</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-value">£486K</div>
+                        <div class="stat-label">Total Sales (MTD)</div>
+                        <div class="stat-change up">+18% vs last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-value">94%</div>
+                        <div class="stat-label">Target Achievement</div>
+                        <div class="stat-change up">+6% vs target</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value">18/24</div>
+                        <div class="stat-label">Stores Visited</div>
+                        <div class="stat-change">75% coverage</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Needs Attention</div>
+                        <div class="stat-change">Down from 5</div>
+                    </div>
+                </div>
+
+                <div class="section" style="padding: 0 20px;">
+                    <div class="section-title">
+                        <span>Store Performance</span>
+                    </div>
+                </div>
+
+                <div class="store-list">
+                    <div class="store-item">
+                        <div class="store-item-header">
+                            <div class="store-name">Tesco Extra Manchester Arndale</div>
+                            <div class="store-badge excellent">Excellent</div>
+                        </div>
+                        <div class="store-metrics">
+                            <div>Sales: <span class="store-metric-value">£42.3K</span></div>
+                            <div style="color: var(--ios-green);">+16% ↑</div>
+                        </div>
+                    </div>
+
+                    <div class="store-item">
+                        <div class="store-item-header">
+                            <div class="store-name">Boots Liverpool One</div>
+                            <div class="store-badge good">Good</div>
+                        </div>
+                        <div class="store-metrics">
+                            <div>Sales: <span class="store-metric-value">£38.1K</span></div>
+                            <div style="color: var(--ios-green);">+9% ↑</div>
+                        </div>
+                    </div>
+
+                    <div class="store-item">
+                        <div class="store-item-header">
+                            <div class="store-name">Superdrug Manchester Market St</div>
+                            <div class="store-badge needs-attention">Needs Attention</div>
+                        </div>
+                        <div class="store-metrics">
+                            <div>Sales: <span class="store-metric-value">£21.4K</span></div>
+                            <div style="color: var(--ios-red);">-8% ↓</div>
+                        </div>
+                    </div>
+
+                    <div class="store-item">
+                        <div class="store-item-header">
+                            <div class="store-name">Asda Leeds White Rose</div>
+                            <div class="store-badge excellent">Excellent</div>
+                        </div>
+                        <div class="store-metrics">
+                            <div>Sales: <span class="store-metric-value">£45.7K</span></div>
+                            <div style="color: var(--ios-green);">+22% ↑</div>
+                        </div>
+                    </div>
+
+                    <div class="store-item">
+                        <div class="store-item-header">
+                            <div class="store-name">Waitrose Altrincham</div>
+                            <div class="store-badge good">Good</div>
+                        </div>
+                        <div class="store-metrics">
+                            <div>Sales: <span class="store-metric-value">£31.2K</span></div>
+                            <div style="color: var(--ios-green);">+5% ↑</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Tab Content -->
+            <div class="tab-content" id="actionsTab">
+                <div class="header">
+                    <div class="header-top">
+                        <div class="greeting" style="font-size: 28px;">Actions</div>
+                    </div>
+                    <div class="subheading">12 pending · 8 completed this week</div>
+                </div>
+
+                <div class="action-filter-tabs">
+                    <div class="filter-tab active" onclick="filterActions('all')">All</div>
+                    <div class="filter-tab" onclick="filterActions('high')">High Priority</div>
+                    <div class="filter-tab" onclick="filterActions('today')">Due Today</div>
+                    <div class="filter-tab" onclick="filterActions('completed')">Completed</div>
+                </div>
+
+                <div class="action-list">
+                    <div class="action-item high">
+                        <div class="action-item-header">
+                            <div class="action-item-title">Reposition vitamin display at Tesco Manchester</div>
+                            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                        </div>
+                        <div class="action-item-meta">Tesco Extra Manchester Arndale</div>
+                        <div class="action-due overdue">🔴 Due today</div>
+                    </div>
+
+                    <div class="action-item high">
+                        <div class="action-item-header">
+                            <div class="action-item-title">Resolve Boost Plus OOS issue</div>
+                            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                        </div>
+                        <div class="action-item-meta">Tesco Extra Manchester Arndale</div>
+                        <div class="action-due overdue">🔴 Overdue by 2 days</div>
+                    </div>
+
+                    <div class="action-item medium">
+                        <div class="action-item-header">
+                            <div class="action-item-title">Negotiate promotional end cap for Immunity</div>
+                            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                        </div>
+                        <div class="action-item-meta">Boots Liverpool One</div>
+                        <div class="action-due">📅 Due tomorrow</div>
+                    </div>
+
+                    <div class="action-item medium">
+                        <div class="action-item-header">
+                            <div class="action-item-title">Schedule manager training on new product range</div>
+                            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                        </div>
+                        <div class="action-item-meta">Multiple stores</div>
+                        <div class="action-due">📅 Due in 3 days</div>
+                    </div>
+
+                    <div class="action-item completed">
+                        <div class="action-item-header">
+                            <div class="action-item-title">Submit weekly territory report</div>
+                            <div class="action-checkbox checked" onclick="toggleAction(this)">✓</div>
+                        </div>
+                        <div class="action-item-meta">Territory-wide</div>
+                        <div class="action-due">✅ Completed today</div>
+                    </div>
+
+                    <div class="action-item completed">
+                        <div class="action-item-header">
+                            <div class="action-item-title">Complete visit brief for Asda Leeds</div>
+                            <div class="action-checkbox checked" onclick="toggleAction(this)">✓</div>
+                        </div>
+                        <div class="action-item-meta">Asda Leeds White Rose</div>
+                        <div class="action-due">✅ Completed yesterday</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ask Tribble Tab Content -->
+            <div class="tab-content" id="chatTab">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message tribble">
+                            <div class="message-header">
+                                <div class="message-avatar tribble">T</div>
+                                <div class="message-name">Tribble</div>
+                                <div class="message-time">9:15 AM</div>
+                            </div>
+                            <div class="message-bubble">
+                                Good morning Sarah! I've prepared your briefs for today's 3 visits. Is there anything specific you'd like to know about your territory or upcoming visits?
+                            </div>
+                        </div>
+
+                        <div class="suggested-questions" id="suggestedQuestions">
+                            <div class="suggested-questions-title">Suggested questions:</div>
+                            <div class="suggested-question" onclick="askQuestion(this)">
+                                Which stores in my territory are underperforming?
+                            </div>
+                            <div class="suggested-question" onclick="askQuestion(this)">
+                                What were the top wins from similar KAMs this week?
+                            </div>
+                            <div class="suggested-question" onclick="askQuestion(this)">
+                                Show me OOS trends across my territory
+                            </div>
+                            <div class="suggested-question" onclick="askQuestion(this)">
+                                What actions should I prioritize this week?
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <textarea
+                                class="chat-input"
+                                id="chatInput"
+                                placeholder="Ask Tribble anything..."
+                                rows="1"
+                                onkeydown="handleChatKeydown(event)"
+                            ></textarea>
+                            <button class="chat-send-btn" onclick="sendMessage()" id="sendBtn">
+                                ↑
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Bar -->
+            <div class="tab-bar">
+                <div class="tab-item active" onclick="switchTab('todayTab', this)">
+                    <div class="tab-icon">📅</div>
+                    <div>Today</div>
+                </div>
+                <div class="tab-item" onclick="switchTab('territoryTab', this)">
+                    <div class="tab-icon">📊</div>
+                    <div>Territory</div>
+                </div>
+                <div class="tab-item" onclick="switchTab('actionsTab', this)">
+                    <div class="tab-icon">🎯</div>
+                    <div>Actions</div>
+                </div>
+                <div class="tab-item" onclick="switchTab('chatTab', this)">
+                    <div class="tab-icon">💬</div>
+                    <div>Ask Tribble</div>
+                </div>
+            </div>
+
+            <!-- Brief Overlay -->
+            <div class="brief-overlay" id="briefOverlay">
+                <div class="brief-header">
+                    <button class="back-button" onclick="closeBrief()">
+                        <span style="font-size: 20px;">‹</span>
+                        <span>Back</span>
+                    </button>
+                </div>
+                <div class="brief-scroll-container">
+                    <div class="brief-content" id="briefContent">
+                        <!-- Content loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Generating brief...</div>
+                <div class="loading-subtext">Tribble is querying Exceedra, SAP, and Power BI</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentBriefData = null;
+
+        // Teams Integration Functions
+        function askTribble(question, context) {
+            // Use web version of Teams instead of app protocol
+            const teamsWebUrl = `https://teams.microsoft.com/l/chat/0/0?` +
+                `users=tribble@nestle.com&` +
+                `topicName=Ask%20Tribble&` +
+                `message=${encodeURIComponent(question)}`;
+
+            // Open in new tab
+            window.open(teamsWebUrl, '_blank');
+        }
+
+        function shareToTeams(title, content, context) {
+            const message = `${title}\n\n${content}`;
+
+            // Use web version of Teams for sharing
+            const teamsWebUrl = `https://teams.microsoft.com/l/chat/0/0?` +
+                `topicName=${encodeURIComponent(title)}&` +
+                `message=${encodeURIComponent(message)}`;
+
+            // Open in new tab
+            window.open(teamsWebUrl, '_blank');
+        }
+
+        function showBrief(storeId) {
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('visible');
+
+            // Simulate loading time
+            setTimeout(() => {
+                loadBriefContent(storeId);
+                document.getElementById('loadingOverlay').classList.remove('visible');
+                document.getElementById('briefOverlay').classList.add('visible');
+            }, 1500);
+        }
+
+        function generateBrief(storeId) {
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('visible');
+
+            // Call API to generate brief
+            fetch('/kam/prep/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    storeId: storeId,
+                    kamEmail: 'sarah.williams@nestle.com',
+                    visitType: 'routine'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Poll for completion
+                return pollBriefStatus(data.jobId);
+            })
+            .then(jobId => {
+                return loadBriefContent(storeId, jobId);
+            })
+            .then(() => {
+                document.getElementById('loadingOverlay').classList.remove('visible');
+                document.getElementById('briefOverlay').classList.add('visible');
+
+                // Update card status
+                const card = document.querySelector(`[data-store-id="${storeId}"]`);
+                const statusEl = card.querySelector('.visit-status');
+                statusEl.className = 'visit-status ready';
+                statusEl.innerHTML = '<span>✓</span><span>Brief Ready</span>';
+            })
+            .catch(err => {
+                console.error('Error generating brief:', err);
+                document.getElementById('loadingOverlay').classList.remove('visible');
+                alert('Error generating brief. Please try again.');
+            });
+        }
+
+        function pollBriefStatus(jobId) {
+            return new Promise((resolve, reject) => {
+                const poll = () => {
+                    fetch(`/kam/prep/${jobId}/status`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status === 'completed') {
+                                resolve(jobId);
+                            } else if (data.status === 'failed') {
+                                reject(new Error('Brief generation failed'));
+                            } else {
+                                setTimeout(poll, 500);
+                            }
+                        })
+                        .catch(reject);
+                };
+                poll();
+            });
+        }
+
+        async function loadBriefContent(storeId, jobId) {
+            try {
+                // Get brief data
+                let briefData;
+                if (jobId) {
+                    const res = await fetch(`/kam/prep/${jobId}/result`);
+                    briefData = await res.json();
+                } else {
+                    // Use existing brief for UK12345
+                    const res = await fetch(`/kam/intelligence/${storeId}`);
+                    briefData = await res.json();
+                }
+
+                currentBriefData = briefData;
+
+                // Render brief
+                const content = document.getElementById('briefContent');
+                content.innerHTML = renderBrief(briefData);
+            } catch (err) {
+                console.error('Error loading brief:', err);
+            }
+        }
+
+        function renderBrief(data) {
+            const store = data.storeProfile || {};
+            const brief = data.brief || {};
+            const actions = data.nextBestActions || brief.nextBestActions || [];
+            const alerts = data.riskAlerts || brief.riskAlerts || [];
+
+            return `
+                <div class="brief-hero animate-in">
+                    <div class="brief-store-name">${store.name || 'Tesco Extra Manchester Arndale'}</div>
+                    <div class="brief-store-meta">${store.storeManager || 'David Thompson'} · ${store.retailer || 'Tesco'} ${store.format || 'Extra'}</div>
+                </div>
+
+                ${alerts.length > 0 ? `
+                    <div class="alert-badge animate-in" style="animation-delay: 0.1s;">
+                        <span>⚠️</span>
+                        <span>${alerts.length} critical ${alerts.length === 1 ? 'alert' : 'alerts'}</span>
+                    </div>
+                ` : ''}
+
+                <div class="brief-summary-card animate-in" style="animation-delay: 0.15s;">
+                    <div class="summary-label">Executive Summary</div>
+                    <div class="summary-text">${brief.executiveSummary || 'Loading...'}</div>
+                </div>
+
+                <div class="metric-grid">
+                    <div class="metric-card animate-in" style="animation-delay: 0.2s;">
+                        <div class="metric-label">Immunity</div>
+                        <div class="metric-value">£16.9K</div>
+                        <div class="metric-change up">+12% ↑</div>
+                        <div class="metric-card-actions">
+                            <button class="ask-btn" onclick="askTribble('Why is Immunity up 12% this week?', {store: '${store.name}', metric: 'Immunity', change: '+12%'})">
+                                💬 Ask Why
+                            </button>
+                        </div>
+                    </div>
+                    <div class="metric-card animate-in" style="animation-delay: 0.25s;">
+                        <div class="metric-label">Adult Nutrition</div>
+                        <div class="metric-value">£24.3K</div>
+                        <div class="metric-change up">+8% ↑</div>
+                        <div class="metric-card-actions">
+                            <button class="ask-btn" onclick="askTribble('What is driving Adult Nutrition growth?', {store: '${store.name}', metric: 'Adult Nutrition', change: '+8%'})">
+                                💬 Ask Why
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions-section">
+                    <div class="section-title animate-in" style="animation-delay: 0.3s;">
+                        <span>Next Best Actions</span>
+                    </div>
+                    ${actions.slice(0, 3).map((action, i) => `
+                        <div class="action-card animate-in" style="animation-delay: ${0.35 + (i * 0.05)}s;">
+                            <div class="action-priority ${action.priority === 'HIGH' ? 'high' : action.priority === 'MEDIUM' ? 'medium' : 'low'}">
+                                ${action.priority === 'HIGH' ? '🔴' : action.priority === 'MEDIUM' ? '🟠' : '🟡'}
+                            </div>
+                            <div class="action-title">${action.action}</div>
+                            <div class="action-impact">${action.expectedImpact}</div>
+                            <div class="action-evidence">${action.rationale}</div>
+                            <div class="teams-buttons">
+                                <button class="teams-btn" onclick='askTribble("${action.action.replace(/'/g, "\\'")} - Tell me more about this recommendation", {store: "${store.name}", action: "${action.action.replace(/'/g, "\\'")}"})'>
+                                    💬 Ask Tribble
+                                </button>
+                                <button class="teams-btn secondary" onclick='shareToTeams("${action.action.replace(/'/g, "\\'")}","${action.expectedImpact.replace(/'/g, "\\'")} \\n\\nProof: ${action.rationale.replace(/'/g, "\\'")}", {store: "${store.name}"})'>
+                                    📤 Share
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                ${alerts.length > 0 ? `
+                    <div class="actions-section">
+                        <div class="section-title animate-in" style="animation-delay: 0.5s;">
+                            <span>Risk Alerts</span>
+                        </div>
+                        ${alerts.slice(0, 2).map((alert, i) => `
+                            <div class="action-card animate-in" style="animation-delay: ${0.55 + (i * 0.05)}s;">
+                                <div class="action-priority high">⚠️</div>
+                                <div class="action-title">${alert.type}</div>
+                                <div class="action-evidence">${alert.description}</div>
+                                <div class="teams-buttons">
+                                    <button class="teams-btn" onclick='askTribble("Why is ${alert.type.replace(/'/g, "\\'")} happening at ${store.name}?", {store: "${store.name}", alert: "${alert.type.replace(/'/g, "\\'")}", severity: "high"})'>
+                                        💬 Ask Why
+                                    </button>
+                                    <button class="teams-btn secondary" onclick='shareToTeams("⚠️ ${alert.type.replace(/'/g, "\\'")}", "${alert.description.replace(/'/g, "\\'")}", {store: "${store.name}"})'>
+                                        📤 Escalate
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function closeBrief() {
+            document.getElementById('briefOverlay').classList.remove('visible');
+        }
+
+        // Tab Navigation
+        function switchTab(tabId, tabElement) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all tab items
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            tabElement.classList.add('active');
+        }
+
+        // Actions Tab Functions
+        function filterActions(filter) {
+            // Update filter tab styling
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter logic would go here
+            console.log('Filtering actions:', filter);
+        }
+
+        function toggleAction(checkbox) {
+            checkbox.classList.toggle('checked');
+            const actionItem = checkbox.closest('.action-item');
+            actionItem.classList.toggle('completed');
+
+            if (checkbox.classList.contains('checked')) {
+                checkbox.textContent = '✓';
+            } else {
+                checkbox.textContent = '';
+            }
+        }
+
+        // Chat Functions
+        let chatHistory = [];
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message
+            addChatMessage('user', message);
+            input.value = '';
+
+            // Hide suggested questions after first message
+            const suggestedQuestions = document.getElementById('suggestedQuestions');
+            if (suggestedQuestions) {
+                suggestedQuestions.style.display = 'none';
+            }
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Simulate Tribble response (in production, this would call the SDK)
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = generateTribbleResponse(message);
+                addChatMessage('tribble', response);
+            }, 1500);
+        }
+
+        function addChatMessage(sender, text) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+
+            if (sender === 'tribble') {
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <div class="message-avatar tribble">T</div>
+                        <div class="message-name">Tribble</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                    <div class="message-bubble">${text}</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <div class="message-avatar user">SW</div>
+                        <div class="message-name">You</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                    <div class="message-bubble">${text}</div>
+                `;
+            }
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            chatHistory.push({ sender, text, time });
+        }
+
+        function askQuestion(questionElement) {
+            const question = questionElement.textContent.trim();
+            document.getElementById('chatInput').value = question;
+            sendMessage();
+        }
+
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-message tribble';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="message-header">
+                    <div class="message-avatar tribble">T</div>
+                    <div class="message-name">Tribble</div>
+                </div>
+                <div class="message-bubble">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function generateTribbleResponse(userMessage) {
+            // Simple demo responses - in production, this would call the Tribble SDK
+            const lowerMsg = userMessage.toLowerCase();
+
+            if (lowerMsg.includes('underperform')) {
+                return "Based on recent data, Superdrug Manchester Market St is underperforming with -8% sales vs last month. I've identified 3 key issues: shelf visibility is poor, they're out of stock on Boost Plus, and the vitamin display needs repositioning. Would you like me to prepare a detailed action plan?";
+            } else if (lowerMsg.includes('top wins') || lowerMsg.includes('similar kam')) {
+                return "Great question! This week, KAMs in similar territories had success with vitamin end-cap displays (+22% lift), promotional bundles for Immunity products (+18%), and manager training sessions on new products. The Birmingham Fort vitamin repositioning I mentioned earlier is the standout win - £2,890 revenue in 2 weeks.";
+            } else if (lowerMsg.includes('oos') || lowerMsg.includes('out of stock')) {
+                return "I'm seeing OOS trends across 3 stores in your territory. Boost Plus is the main concern - out of stock at Tesco Manchester for 4 days. Historical data shows this typically costs £340/day in lost revenue. I've already flagged this with supply chain. Want me to draft an urgent escalation email?";
+            } else if (lowerMsg.includes('prioritize') || lowerMsg.includes('action')) {
+                return "Based on revenue impact and urgency, here's your priority order:\n\n1. ⚠️ HIGH: Resolve Boost Plus OOS at Tesco (£340/day impact)\n2. 🔴 HIGH: Reposition vitamin display at Tesco (potential +15% lift)\n3. 🟠 MEDIUM: Negotiate Immunity end cap at Boots\n\nFocus on the OOS issue first - I've prepared talking points for your call with the store manager.";
+            } else {
+                return "I understand you're asking about " + userMessage + ". Let me query Exceedra, SAP, and Power BI for the latest data. In the meantime, you can check the Territory tab for overall performance metrics, or I can help you with specific store insights.";
+            }
+        }
+
+        // Simulate morning briefing notification
+        setTimeout(() => {
+            // This would be triggered by Tribble's scheduled workflow at 7am
+            console.log('🌅 Morning briefing ready for 3 visits today');
+        }, 1000);
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ Service Worker registered'))
+                    .catch(err => console.log('❌ Service Worker registration failed:', err));
+            });
+        }
+
+        // PWA Install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('💾 App can be installed!');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+[
+  {
+    "storeId": "UK12345",
+    "name": "Tesco Extra Manchester Arndale",
+    "retailer": "Tesco",
+    "format": "Extra",
+    "city": "Manchester",
+    "region": "North West",
+    "postcode": "M4 3AQ",
+    "size": "Large",
+    "footfall": "High",
+    "demographics": "Urban, Mixed Age, ABC1",
+    "storeManager": "David Thompson",
+    "managerPreferences": "Data-driven, responsive to category performance",
+    "categorySpace": {
+      "adultNutrition": 24,
+      "immunity": 12,
+      "vitamins": 18
+    }
+  },
+  {
+    "storeId": "UK12346",
+    "name": "Boots Liverpool One",
+    "retailer": "Boots",
+    "format": "Flagship",
+    "city": "Liverpool",
+    "region": "North West",
+    "postcode": "L1 8JQ",
+    "size": "Large",
+    "footfall": "Very High",
+    "demographics": "Urban, Young Professionals, ABC1",
+    "storeManager": "Sarah Mitchell",
+    "managerPreferences": "Innovation-focused, promotional activity",
+    "categorySpace": {
+      "adultNutrition": 18,
+      "immunity": 15,
+      "vitamins": 20
+    }
+  },
+  {
+    "storeId": "UK12347",
+    "name": "Superdrug Manchester Market Street",
+    "retailer": "Superdrug",
+    "format": "Standard",
+    "city": "Manchester",
+    "region": "North West",
+    "postcode": "M1 1WA",
+    "size": "Medium",
+    "footfall": "High",
+    "demographics": "Urban, Young Adults, C1C2",
+    "storeManager": "James Parker",
+    "managerPreferences": "Price-conscious, value promotions",
+    "categorySpace": {
+      "adultNutrition": 12,
+      "immunity": 8,
+      "vitamins": 15
+    }
+  },
+  {
+    "storeId": "UK12348",
+    "name": "Tesco Extra Birmingham Fort",
+    "retailer": "Tesco",
+    "format": "Extra",
+    "city": "Birmingham",
+    "region": "West Midlands",
+    "postcode": "B24 9FP",
+    "size": "Large",
+    "footfall": "High",
+    "demographics": "Suburban, Families, ABC1C2",
+    "storeManager": "Priya Sharma",
+    "managerPreferences": "Family-focused, seasonal campaigns",
+    "categorySpace": {
+      "adultNutrition": 20,
+      "immunity": 10,
+      "vitamins": 16
+    }
+  },
+  {
+    "storeId": "UK12349",
+    "name": "Boots Leeds Trinity",
+    "retailer": "Boots",
+    "format": "Standard",
+    "city": "Leeds",
+    "region": "Yorkshire",
+    "postcode": "LS1 6HW",
+    "size": "Medium",
+    "footfall": "High",
+    "demographics": "Urban, Mixed Age, ABC1",
+    "storeManager": "Emma Richardson",
+    "managerPreferences": "Health-focused, educational materials",
+    "categorySpace": {
+      "adultNutrition": 16,
+      "immunity": 12,
+      "vitamins": 18
+    }
+  }
+]

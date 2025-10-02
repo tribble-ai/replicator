@@ -1,0 +1,16 @@
+{
+  "name": "@tribble/sdk-cli",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "tribble": "dist/index.cjs"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --sourcemap --clean"
+  },
+  "dependencies": {
+    "@tribble/sdk": "*"
+  }
+}
+
