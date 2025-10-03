@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Apex Classes -->
+    <types>
+        <members>TribbleAPIClient</members>
+        <members>TribbleAPIClientTest</members>
+        <members>TribbleAgentService</members>
+        <members>TribbleIngestService</members>
+        <name>ApexClass</name>
+    </types>
+
+    <!-- Lightning Web Components -->
+    <types>
+        <members>tribbleAgent</members>
+        <members>tribbleChat</members>
+        <members>tribbleUpload</members>
+        <name>LightningComponentBundle</name>
+    </types>
+
+    <!-- Custom Metadata Types -->
+    <types>
+        <members>Tribble_Config</members>
+        <name>CustomObject</name>
+    </types>
+
+    <!-- Remote Site Settings -->
+    <types>
+        <members>Tribble_API_Production</members>
+        <members>Tribble_API_Staging</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+
+    <!-- API Version -->
+    <version>59.0</version>
+</Package>

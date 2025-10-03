@@ -1,0 +1,16 @@
+# Source files
+src/
+tsconfig.json
+scripts/
+
+# Salesforce specific (these are for deployment, not npm)
+src/salesforce-package/
+sfdx-project.json
+
+# Development
+*.md
+!README.md
+
+# Build artifacts
+*.log
+.DS_Store

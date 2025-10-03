@@ -1,0 +1,49 @@
+{
+  "name": "@tribble/sdk-salesforce",
+  "version": "0.1.0",
+  "description": "Salesforce deployment module for Tribble SDK - Deploy as unmanaged packages with Lightning Web Components and Apex",
+  "private": false,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src/salesforce-package/**/*",
+    "scripts/**/*"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean",
+    "build:salesforce": "node scripts/build-salesforce-package.js",
+    "deploy:validate": "sf project deploy validate --manifest src/salesforce-package/manifest/package.xml",
+    "deploy:test": "sf project deploy start --manifest src/salesforce-package/manifest/package.xml --test-level RunLocalTests",
+    "deploy:prod": "sf project deploy start --manifest src/salesforce-package/manifest/package.xml --test-level RunLocalTests --target-org production"
+  },
+  "dependencies": {
+    "@tribble/sdk-core": "file:../core",
+    "@tribble/sdk-agent": "file:../agent",
+    "@tribble/sdk-ingest": "file:../ingest",
+    "@tribble/sdk-chat": "file:../chat"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "keywords": [
+    "tribble",
+    "salesforce",
+    "lightning",
+    "apex",
+    "unmanaged-package",
+    "crm",
+    "ai",
+    "integration"
+  ]
+}

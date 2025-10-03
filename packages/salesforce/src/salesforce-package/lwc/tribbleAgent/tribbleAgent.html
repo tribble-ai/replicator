@@ -1,0 +1,83 @@
+<template>
+    <lightning-card title={title} icon-name="standard:bot">
+        <div class="slds-card__body">
+            <!-- Tabs -->
+            <div class="slds-tabs_default">
+                <ul class="slds-tabs_default__nav" role="tablist">
+                    <template if:true={showChat}>
+                        <li class={chatTabClass} role="presentation">
+                            <a
+                                class="slds-tabs_default__link"
+                                role="tab"
+                                data-tab="chat"
+                                onclick={handleTabSelect}
+                                aria-selected={isChatActive}
+                            >
+                                <lightning-icon
+                                    icon-name="standard:live_chat"
+                                    size="x-small"
+                                    class="slds-m-right_x-small"
+                                ></lightning-icon>
+                                Chat
+                            </a>
+                        </li>
+                    </template>
+
+                    <template if:true={showUpload}>
+                        <li class={uploadTabClass} role="presentation">
+                            <a
+                                class="slds-tabs_default__link"
+                                role="tab"
+                                data-tab="upload"
+                                onclick={handleTabSelect}
+                                aria-selected={isUploadActive}
+                            >
+                                <lightning-icon
+                                    icon-name="standard:file"
+                                    size="x-small"
+                                    class="slds-m-right_x-small"
+                                ></lightning-icon>
+                                Upload
+                            </a>
+                        </li>
+                    </template>
+                </ul>
+
+                <!-- Tab content -->
+                <div class="slds-tabs_default__content">
+                    <!-- Chat tab -->
+                    <template if:true={isChatActive}>
+                        <div class="slds-tabs_default__content slds-show" role="tabpanel">
+                            <c-tribble-chat
+                                conversation-id={conversationId}
+                                onmessage={handleChatMessage}
+                            ></c-tribble-chat>
+                        </div>
+                    </template>
+
+                    <!-- Upload tab -->
+                    <template if:true={isUploadActive}>
+                        <div class="slds-tabs_default__content slds-show" role="tabpanel">
+                            <c-tribble-upload
+                                onuploadcomplete={handleUploadComplete}
+                            ></c-tribble-upload>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Welcome message (shown when chat tab is active) -->
+            <template if:true={isChatActive}>
+                <template if:true={welcomeMessage}>
+                    <div class="slds-m-top_medium slds-text-color_weak slds-text-align_center">
+                        <lightning-icon
+                            icon-name="standard:bot"
+                            size="small"
+                        ></lightning-icon>
+                        <p class="slds-m-top_small">{welcomeMessage}</p>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

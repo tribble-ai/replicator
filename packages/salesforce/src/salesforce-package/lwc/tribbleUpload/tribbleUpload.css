@@ -1,0 +1,74 @@
+.upload-container {
+    padding: 1rem;
+}
+
+.file-input-section {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dddbda;
+}
+
+.metadata-section {
+    padding: 1rem 0;
+    border-bottom: 1px solid #dddbda;
+}
+
+.selected-files-section {
+    padding: 1rem 0;
+}
+
+.uploaded-files-section {
+    padding: 1rem 0;
+}
+
+.upload-history-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.upload-history-item:last-child {
+    border-bottom: none;
+}
+
+.upload-history-item .file-name {
+    font-weight: 600;
+    flex: 1;
+}
+
+.upload-history-item .document-ids {
+    font-size: 0.75rem;
+    color: #706e6b;
+}
+
+/* Table styling */
+.slds-table td {
+    vertical-align: middle;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .upload-container {
+        padding: 0.5rem;
+    }
+
+    .metadata-section {
+        padding: 0.5rem 0;
+    }
+}
+
+/* Progress bar */
+lightning-progress-bar {
+    display: block;
+}
+
+/* Badge spacing */
+lightning-badge {
+    display: inline-block;
+}
+
+/* Button alignment */
+.slds-float_right {
+    float: right;
+}

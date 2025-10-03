@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage">
+            <property name="acceptedFormats" type="String" default=".pdf,.doc,.docx,.txt,.html,.csv,.json,.xlsx" label="Accepted File Formats" description="Comma-separated list of accepted file extensions"/>
+            <property name="maxFileSizeMB" type="Integer" default="10" label="Max File Size (MB)" description="Maximum file size in megabytes"/>
+            <property name="allowMultiple" type="Boolean" default="false" label="Allow Multiple Files" description="Allow multiple file selection"/>
+            <property name="autoUpload" type="Boolean" default="false" label="Auto Upload" description="Automatically upload files after selection"/>
+            <property name="uploadButtonLabel" type="String" default="Upload to Tribble" label="Upload Button Label" description="Label for the upload button"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

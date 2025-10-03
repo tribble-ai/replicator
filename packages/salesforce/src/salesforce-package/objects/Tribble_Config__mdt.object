@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Tribble Configuration</label>
+    <pluralLabel>Tribble Configurations</pluralLabel>
+    <visibility>Public</visibility>
+
+    <!-- API Endpoint Field -->
+    <fields>
+        <fullName>API_Endpoint__c</fullName>
+        <label>API Endpoint</label>
+        <description>Base URL for Tribble API (e.g., https://api.tribble.ai)</description>
+        <type>Url</type>
+        <required>true</required>
+    </fields>
+
+    <!-- Auth Method Field -->
+    <fields>
+        <fullName>Auth_Method__c</fullName>
+        <label>Authentication Method</label>
+        <description>Method for API authentication: api-key, oauth, or named-credentials</description>
+        <type>Text</type>
+        <length>50</length>
+        <required>true</required>
+    </fields>
+
+    <!-- API Key Field -->
+    <fields>
+        <fullName>API_Key__c</fullName>
+        <label>API Key</label>
+        <description>API key for authentication (if using api-key method)</description>
+        <type>Text</type>
+        <length>255</length>
+        <required>false</required>
+    </fields>
+
+    <!-- OAuth Client ID Field -->
+    <fields>
+        <fullName>OAuth_Client_Id__c</fullName>
+        <label>OAuth Client ID</label>
+        <description>OAuth client ID (if using oauth method)</description>
+        <type>Text</type>
+        <length>255</length>
+        <required>false</required>
+    </fields>
+
+    <!-- Named Credential Field -->
+    <fields>
+        <fullName>Named_Credential__c</fullName>
+        <label>Named Credential</label>
+        <description>Named Credential API name (if using named-credentials method)</description>
+        <type>Text</type>
+        <length>80</length>
+        <required>false</required>
+    </fields>
+
+    <!-- Enable Debug Logs Field -->
+    <fields>
+        <fullName>Enable_Debug_Logs__c</fullName>
+        <label>Enable Debug Logs</label>
+        <description>Enable debug logging for Tribble API calls</description>
+        <type>Checkbox</type>
+        <defaultValue>false</defaultValue>
+        <required>false</required>
+    </fields>
+
+    <!-- User Email Override Field -->
+    <fields>
+        <fullName>User_Email_Override__c</fullName>
+        <label>User Email Override</label>
+        <description>Override user email for Tribble agent (optional)</description>
+        <type>Email</type>
+        <required>false</required>
+    </fields>
+
+    <!-- Timeout Field -->
+    <fields>
+        <fullName>Timeout__c</fullName>
+        <label>Timeout (ms)</label>
+        <description>HTTP callout timeout in milliseconds (default 120000)</description>
+        <type>Number</type>
+        <precision>10</precision>
+        <scale>0</scale>
+        <required>false</required>
+    </fields>
+</CustomObject>

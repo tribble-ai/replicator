@@ -1,0 +1,150 @@
+<template>
+    <lightning-card title="Tribble AI Chat" icon-name="standard:live_chat">
+        <!-- Chat header with actions -->
+        <div slot="actions">
+            <lightning-button-group>
+                <lightning-button
+                    label="Clear"
+                    onclick={handleClearChat}
+                    icon-name="utility:clear"
+                    disabled={isLoading}
+                ></lightning-button>
+                <lightning-button
+                    label="Export"
+                    onclick={handleExportChat}
+                    icon-name="utility:download"
+                    disabled={isLoading}
+                ></lightning-button>
+            </lightning-button-group>
+        </div>
+
+        <!-- Chat messages container -->
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="chat-container">
+                <!-- Messages -->
+                <div class="chat-messages">
+                    <template if:true={hasMessages}>
+                        <template for:each={messages} for:item="message">
+                            <div key={message.id} class={message.role}>
+                                <div class="message-bubble">
+                                    <!-- Message role indicator -->
+                                    <div class="message-role">
+                                        <template if:true={message.role === 'user'}>
+                                            <lightning-icon
+                                                icon-name="standard:user"
+                                                size="x-small"
+                                            ></lightning-icon>
+                                            <span>You</span>
+                                        </template>
+                                        <template if:true={message.role === 'assistant'}>
+                                            <lightning-icon
+                                                icon-name="standard:bot"
+                                                size="x-small"
+                                            ></lightning-icon>
+                                            <span>Tribble AI</span>
+                                        </template>
+                                        <template if:true={message.role === 'system'}>
+                                            <lightning-icon
+                                                icon-name="standard:service_report"
+                                                size="x-small"
+                                            ></lightning-icon>
+                                            <span>System</span>
+                                        </template>
+                                    </div>
+
+                                    <!-- Message content -->
+                                    <div class="message-content">
+                                        <lightning-formatted-rich-text
+                                            value={message.content}
+                                        ></lightning-formatted-rich-text>
+                                    </div>
+
+                                    <!-- Message timestamp -->
+                                    <div class="message-timestamp">
+                                        <lightning-formatted-date-time
+                                            value={message.timestamp}
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                        ></lightning-formatted-date-time>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+
+                    <!-- Empty state -->
+                    <template if:false={hasMessages}>
+                        <div class="empty-state">
+                            <lightning-icon
+                                icon-name="standard:live_chat"
+                                size="large"
+                            ></lightning-icon>
+                            <p class="slds-text-heading_small slds-m-top_medium">
+                                Start a conversation with Tribble AI
+                            </p>
+                            <p class="slds-text-body_regular slds-text-color_weak">
+                                Ask questions, get insights, or upload documents for analysis
+                            </p>
+                        </div>
+                    </template>
+
+                    <!-- Typing indicator -->
+                    <template if:true={isTyping}>
+                        <div class="typing-indicator">
+                            <lightning-icon
+                                icon-name="standard:bot"
+                                size="x-small"
+                            ></lightning-icon>
+                            <div class="typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Input area -->
+                <div class="chat-input">
+                    <lightning-textarea
+                        value={inputMessage}
+                        placeholder={placeholder}
+                        onchange={handleInputChange}
+                        onkeypress={handleKeyPress}
+                        max-length={maxMessageLength}
+                        disabled={isLoading}
+                        class="input-field"
+                    ></lightning-textarea>
+
+                    <lightning-button
+                        label="Send"
+                        variant="brand"
+                        onclick={handleSendMessage}
+                        disabled={isInputDisabled}
+                        icon-name="utility:send"
+                        icon-position="right"
+                        class="send-button"
+                    ></lightning-button>
+                </div>
+
+                <!-- Conversation ID display (for debugging) -->
+                <template if:true={conversationId}>
+                    <div class="conversation-info">
+                        <lightning-formatted-text
+                            value={conversationId}
+                            class="slds-text-body_small slds-text-color_weak"
+                        ></lightning-formatted-text>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Loading spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner
+                alternative-text="Loading"
+                size="small"
+            ></lightning-spinner>
+        </template>
+    </lightning-card>
+</template>
