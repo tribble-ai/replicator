@@ -1,0 +1,39 @@
+name: lead-dedupe-and-route
+version: 0.1.0
+sdk: "@tribble/sdk@0.x"
+capabilities:
+  - contact.lookup:v1
+  - email.send:v2
+  - crm.upsert:v1
+intents:
+  - when: "lead_created"
+    steps:
+      - type: dedupe
+        strategy: semantic+exact
+        threshold: 0.92
+      - type: enrich
+        source: clearbit
+      - type: route
+        rule: region+size
+        owners: ["AE-west", "AE-east"]
+      - type: call
+        capability: crm.upsert:v1
+        params:
+          externalId: "{{ lead.id }}"
+      - type: call
+        capability: email.send:v2
+        params:
+          to: "{{ owner.email }}"
+          template: "new-lead"
+policies:
+  pii: redact
+  data_scope: tenant
+  cost_limit_usd: 25
+tests:
+  - name: routes correct enterprise lead
+    given_event: fixtures/enterprise_lead.json
+    expect: ["crm.upsert", "email.send"]
+permissions:
+  - crm:write
+  - email:send
+

@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run -w @tribble/sdk-core build && npm run -w @tribble/sdk-agent build && npm run -w @tribble/sdk-chat build && npm run -w @tribble/sdk-ingest build && npm run -w @tribble/sdk-docs build && npm run -w @tribble/sdk-workflows build && npm run -w @tribble/sdk-events build && npm run -w @tribble/sdk-actions build && npm run -w @tribble/sdk-connectors build && npm run -w @tribble/sdk-auth build && npm run -w @tribble/sdk-queue build && npm run -w @tribble/sdk-render build && npm run -w @tribble/sdk-integrations build && npm run -w @tribble/sdk-servicenow build && npm run -w @tribble/sdk-sap build && npm run -w @tribble/sdk-salesforce build && npm run -w @tribble/sdk build && npm run -w @tribble/sdk-cli build",
+    "build": "npm run -w @tribble/sdk-core build && npm run -w @tribble/sdk-agent build && npm run -w @tribble/sdk-chat build && npm run -w @tribble/sdk-ingest build && npm run -w @tribble/sdk-docs build && npm run -w @tribble/sdk-workflows build && npm run -w @tribble/sdk-events build && npm run -w @tribble/sdk-actions build && npm run -w @tribble/sdk-connectors build && npm run -w @tribble/sdk-auth build && npm run -w @tribble/sdk-queue build && npm run -w @tribble/sdk-render build && npm run -w @tribble/sdk-integrations build && npm run -w @tribble/sdk-servicenow build && npm run -w @tribble/sdk-sap build && npm run -w @tribble/sdk-salesforce build && npm run -w @tribble/sdk-extensions build && npm run -w @tribble/sdk-policy build && npm run -w @tribble/sdk-capabilities build && npm run -w @tribble/sdk-control build && npm run -w @tribble/sdk-primitives build && npm run -w @tribble/sdk-test build && npm run -w @tribble/sdk-runner build && npm run -w @tribble/sdk build && npm run -w @tribble/sdk-cli build",
     "clean": "rm -rf packages/*/dist",
     "format": "prettier . --write"
   },
@@ -16,5 +16,5 @@
     "tsup": "^8.2.4",
     "typescript": "^5.6.2"
   },
-  "packageManager": "npm@10"
+  "packageManager": "npm@10.5.0"
 }

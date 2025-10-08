@@ -19,8 +19,8 @@
     "build": "tsup src/index.ts --format esm,cjs --sourcemap --clean --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@tribble/sdk-core": "workspace:*",
-    "@tribble/sdk-ingest": "workspace:*"
+    "@tribble/sdk-core": "*",
+    "@tribble/sdk-ingest": "*"
   },
   "devDependencies": {
     "@types/node": "^20.0.0"

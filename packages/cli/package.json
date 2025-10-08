@@ -10,7 +10,10 @@
     "build": "tsup src/index.ts --format esm,cjs --sourcemap --clean"
   },
   "dependencies": {
-    "@tribble/sdk": "*"
+    "@tribble/sdk": "*",
+    "@tribble/sdk-extensions": "*",
+    "@tribble/sdk-test": "*",
+    "@tribble/sdk-capabilities": "*",
+    "yaml": "^2.5.1"
   }
 }
-

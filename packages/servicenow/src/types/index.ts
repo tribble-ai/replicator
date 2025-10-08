@@ -109,7 +109,10 @@ export interface ServiceNowWidget {
   id: string;
   name: string;
   description: string;
-  script: string; // Server script
+  /** Primary server script for the widget */
+  script?: string; // Server script
+  /** Optional alias when legacy code uses serverScript */
+  serverScript?: string;
   clientScript: string; // Client controller
   template: string; // HTML template
   css: string;
@@ -120,7 +123,7 @@ export interface ServiceNowWidget {
 export interface WidgetOption {
   name: string;
   label: string;
-  type: 'string' | 'boolean' | 'integer' | 'reference';
+  type: 'string' | 'boolean' | 'integer' | 'reference' | string;
   defaultValue?: any;
   mandatory?: boolean;
 }

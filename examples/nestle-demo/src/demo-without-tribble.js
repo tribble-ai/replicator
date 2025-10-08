@@ -121,6 +121,337 @@ app.get('/kam/intelligence/:storeId', async (req, res) => {
   }
 });
 
+// NAM: Territory overview (aggregated KPIs for tablet view)
+app.get('/nam/overview', async (_req, res) => {
+  try {
+    const stores = await dataService.getAllStores();
+    if (!stores) return res.json({ stores: 0, summary: {}, categoryMix: {}, leaderboard: [], riskAlerts: [] });
+
+    // Load per-store data in parallel
+    const perStore = await Promise.all(stores.map(async (s) => {
+      const [sales, dashboard, visits] = await Promise.all([
+        dataService.getSAPSalesData(s.storeId),
+        dataService.getPowerBIDashboard(s.storeId),
+        dataService.getExceedraVisits(s.storeId, 3)
+      ]);
+      return { store: s, sales, dashboard, visits };
+    }));
+
+    // Aggregate KPIs
+    let totalRevenue = 0;
+    let totalYOYGrowth = 0;
+    let yoyCount = 0;
+    const categoryTotals = new Map();
+    let oosIncidents = 0;
+    let actionsLast60d = 0;
+
+    const now = new Date();
+    const cutoff = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+    perStore.forEach(({ sales, dashboard, visits }) => {
+      if (sales?.categorySales) {
+        sales.categorySales.forEach(cat => {
+          totalRevenue += cat.revenue;
+          categoryTotals.set(cat.category, (categoryTotals.get(cat.category) || 0) + cat.revenue);
+        });
+      }
+      if (sales?.skuPerformance) {
+        oosIncidents += sales.skuPerformance.reduce((sum, sku) => sum + (sku.oosIncidents || 0), 0);
+      }
+      if (dashboard?.kpis?.yoyGrowth != null) {
+        totalYOYGrowth += dashboard.kpis.yoyGrowth;
+        yoyCount += 1;
+      }
+      if (visits?.length) {
+        visits.forEach(v => {
+          const d = new Date(v.visitDate);
+          if (!Number.isNaN(d) && d >= cutoff) {
+            actionsLast60d += (v.actionsCompleted?.length || 0);
+          }
+        });
+      }
+    });
+
+    // Category mix percentage
+    const categoryMix = Array.from(categoryTotals.entries()).map(([category, revenue]) => ({
+      category,
+      revenue,
+      mix: totalRevenue > 0 ? revenue / totalRevenue : 0
+    }));
+
+    // Simple leaderboard by revenue
+    const leaderboard = perStore.map(({ store, sales, dashboard }) => ({
+      storeId: store.storeId,
+      name: store.name,
+      retailer: store.retailer,
+      revenue90d: sales?.categorySales?.reduce((sum, c) => sum + c.revenue, 0) || 0,
+      yoyGrowth: dashboard?.kpis?.yoyGrowth ?? null
+    }))
+    .sort((a, b) => b.revenue90d - a.revenue90d)
+    .slice(0, 5);
+
+    // Risk alerts: synthesize from pricing variance & OOS
+    const riskAlerts = [];
+    perStore.forEach(({ store, sales }) => {
+      const oos = (sales?.skuPerformance || []).filter(sku => sku.oosIncidents > 0);
+      if (oos.length > 0) {
+        const top = oos.sort((a, b) => b.oosIncidents - a.oosIncidents)[0];
+        riskAlerts.push({
+          type: 'oos',
+          severity: top.oosIncidents > 1 ? 'high' : 'medium',
+          storeId: store.storeId,
+          storeName: store.name,
+          title: `${top.name} OOS incidents: ${top.oosIncidents}`
+        });
+      }
+      const pricing = (sales?.skuPerformance || []).filter(sku => Math.abs(sku.priceVsTerritory) > 0.08);
+      pricing.slice(0, 1).forEach(p => riskAlerts.push({
+        type: 'pricing',
+        severity: 'medium',
+        storeId: store.storeId,
+        storeName: store.name,
+        title: `${p.name} pricing variance ${Math.round(p.priceVsTerritory * 100)}%`
+      }));
+    });
+
+    res.json({
+      stores: stores.length,
+      summary: {
+        revenue90d: totalRevenue,
+        yoyGrowthAvg: yoyCount > 0 ? totalYOYGrowth / yoyCount : null,
+        oosIncidents,
+        actionsLast60d
+      },
+      categoryMix,
+      leaderboard,
+      riskAlerts
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// NAM: KAM roster with light metrics
+app.get('/nam/kams', async (_req, res) => {
+  try {
+    const nam = await dataService.getNAMData();
+    const stores = await dataService.getAllStores();
+    const byId = new Map(stores.map(s => [s.storeId, s]));
+
+    const roster = await Promise.all((nam?.kams || []).map(async kam => {
+      // Aggregate revenue across KAM stores
+      const storeIds = kam.stores || [];
+      const revenues = await Promise.all(storeIds.map(async id => {
+        const sales = await dataService.getSAPSalesData(id);
+        return sales?.categorySales?.reduce((sum, c) => sum + c.revenue, 0) || 0;
+      }));
+      const totalRevenue = revenues.reduce((a, b) => a + b, 0);
+      return {
+        name: kam.name,
+        email: kam.email,
+        territory: kam.territory,
+        stores: storeIds.map(id => ({ id, name: byId.get(id)?.name || id })),
+        performanceScore: kam.performanceScore,
+        meetingsThisWeek: kam.meetingsThisWeek,
+        lastActive: kam.lastActive,
+        coachingNeeds: kam.coachingNeeds,
+        revenue90d: totalRevenue
+      };
+    }));
+
+    res.json({ kams: roster });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// NAM: Recorded calls list (Tribble Recorder mock)
+app.get('/nam/calls', async (_req, res) => {
+  try {
+    const nam = await dataService.getNAMData();
+    const calls = (nam?.calls || []).map(c => ({
+      id: c.id,
+      date: c.date,
+      type: c.type,
+      storeId: c.storeId,
+      storeName: c.storeName,
+      camName: c.camName,
+      managerName: c.managerName,
+      durationMin: c.durationMin,
+      sentiment: c.sentiment,
+      topics: c.topics,
+      transcriptSnippet: c.transcriptSnippet
+    }));
+    res.json({ calls });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// NAM: Call details by ID (includes transcript & analytics)
+app.get('/nam/calls/:id', async (req, res) => {
+  try {
+    const nam = await dataService.getNAMData();
+    const call = (nam?.calls || []).find(c => c.id === req.params.id);
+    if (!call) return res.status(404).json({ error: 'Call not found' });
+    res.json(call);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// NAM: Agent-style explanations for metrics and entities
+app.get('/nam/explain', async (req, res) => {
+  try {
+    const metric = (req.query.metric || '').toString();
+    const category = req.query.category?.toString();
+    const storeId = req.query.storeId?.toString();
+
+    // Helper to aggregate overview (reuse logic from /nam/overview)
+    async function aggregate() {
+      const stores = await dataService.getAllStores();
+      const perStore = await Promise.all(stores.map(async (s) => {
+        const [sales, dashboard, visits, similar] = await Promise.all([
+          dataService.getSAPSalesData(s.storeId),
+          dataService.getPowerBIDashboard(s.storeId),
+          dataService.getExceedraVisits(s.storeId, 3),
+          dataService.getSimilarStoreSuccesses(s.storeId)
+        ]);
+        return { store: s, sales, dashboard, visits, similar };
+      }));
+      return perStore;
+    }
+
+    if (metric === 'store' && storeId) {
+      // Store-level insight using local intelligence engine
+      const [profile, perf, actions, risks] = await Promise.all([
+        dataService.getStoreProfile(storeId),
+        intelligenceEngine.analyzePerformance(storeId),
+        intelligenceEngine.generateNextBestActions(storeId),
+        intelligenceEngine.generateRiskAlerts(storeId)
+      ]);
+      if (!profile) return res.status(404).json({ error: 'Store not found' });
+      return res.json({
+        title: `${profile.name} · Insight`,
+        summary: `${profile.name} performance is ${perf.overall}. ${perf.strengths[0] || ''}`.trim(),
+        drivers: [
+          ...(perf.strengths || []).slice(0, 3),
+          ...(perf.concerns || []).slice(0, 2).map(c => `Concern: ${c}`)
+        ],
+        suggestions: (actions || []).slice(0, 3).map(a => `${a.action} (${a.expectedImpact})`),
+        risks: (risks || []).slice(0, 3),
+      });
+    }
+
+    const perStore = await aggregate();
+
+    if (metric === 'revenue90d') {
+      const totalRevenue = perStore.reduce((sum, p) => sum + (p.sales?.categorySales?.reduce((s, c) => s + c.revenue, 0) || 0), 0);
+      const topStores = perStore.map(p => ({
+        name: p.store.name,
+        id: p.store.storeId,
+        revenue: p.sales?.categorySales?.reduce((s, c) => s + c.revenue, 0) || 0
+      })).sort((a, b) => b.revenue - a.revenue).slice(0, 3);
+      const oos = perStore.reduce((acc, p) => acc + (p.sales?.skuPerformance?.reduce((s, sku) => s + (sku.oosIncidents || 0), 0) || 0), 0);
+      return res.json({
+        title: 'Revenue (90d) — What drives this?',
+        summary: `£${Math.round(totalRevenue).toLocaleString()} across ${perStore.length} stores. Top contributors listed below.`,
+        drivers: topStores.map(s => `${s.name}: £${Math.round(s.revenue).toLocaleString()}`),
+        suggestions: [
+          `Replicate top stores\' best actions in similar profiles (consider end-cap displays and range extension).`,
+          oos > 0 ? `Reduce out-of-stock hotspots (≈${oos} incidents recorded) to recover revenue.` : `Maintain strong availability; no major OOS hotspots detected.`,
+          `Prioritize high-growth categories with targeted promos and staff enablement.`
+        ]
+      });
+    }
+
+    if (metric === 'yoy') {
+      const withYoY = perStore.filter(p => p.dashboard?.kpis?.yoyGrowth != null);
+      const avg = withYoY.reduce((s, p) => s + p.dashboard.kpis.yoyGrowth, 0) / (withYoY.length || 1);
+      const winners = withYoY.filter(p => p.dashboard.kpis.yoyGrowth >= 0.1).map(p => `${p.store.name} (${Math.round(p.dashboard.kpis.yoyGrowth*100)}%)`);
+      const laggards = withYoY.filter(p => p.dashboard.kpis.yoyGrowth < 0.02).map(p => `${p.store.name} (${Math.round(p.dashboard.kpis.yoyGrowth*100)}%)`);
+      return res.json({
+        title: 'YoY Growth (avg) — Interpretation',
+        summary: `Average YoY growth is ${(avg*100).toFixed(1)}% across ${withYoY.length} stores.`,
+        drivers: [
+          winners.length ? `Leaders: ${winners.slice(0,3).join(', ')}` : 'No clear YoY leaders.',
+          laggards.length ? `Underperformers: ${laggards.slice(0,3).join(', ')}` : 'Few underperformers detected.'
+        ],
+        suggestions: [
+          'Cross-pollinate leader tactics to underperformers (displays, training, pricing calibration).',
+          'Audit pricing variance on key SKUs; correct outliers to remove drag.',
+          'Time promotions with footfall peaks; reinforce manager-preferences with tailored visuals.'
+        ]
+      });
+    }
+
+    if (metric === 'oos') {
+      const skuIncidents = [];
+      perStore.forEach(p => (p.sales?.skuPerformance || []).forEach(sku => {
+        if (sku.oosIncidents > 0) skuIncidents.push({ store: p.store, sku });
+      }));
+      const total = skuIncidents.reduce((s, r) => s + r.sku.oosIncidents, 0);
+      const hotspots = skuIncidents.sort((a,b)=>b.sku.oosIncidents-a.sku.oosIncidents).slice(0,3)
+        .map(r => `${r.store.name} · ${r.sku.name} (${r.sku.oosIncidents} OOS)`);
+      return res.json({
+        title: 'OOS Incidents — Impact & Next Steps',
+        summary: `${total} OOS incidents across the territory (last 90d) impacting conversion and revenue.`,
+        drivers: hotspots,
+        suggestions: [
+          'Set safety-stock thresholds on top-risk SKUs; enable alerts from DC availability.',
+          'Sequence promos only with confirmed stock coverage; pre-allocate inventory for high-velocity items.',
+          'Add shelf checks to KAM actions; track recovery impact in SAP trend.'
+        ]
+      });
+    }
+
+    if (metric === 'actions') {
+      const now = new Date(); const cutoff = new Date(now.getTime() - 60*24*60*60*1000);
+      let actionCount = 0;
+      perStore.forEach(p => (p.visits || []).forEach(v => { const d = new Date(v.visitDate); if (d>=cutoff) actionCount += (v.actionsCompleted?.length || 0); }));
+      return res.json({
+        title: 'Actions (60d) — Execution Pulse',
+        summary: `${actionCount} actions logged in the last 60 days across the territory.`,
+        drivers: [
+          'More actions correlate with faster recovery of OOS and better promo execution.',
+          'Coaching opportunity: ensure follow-ups are closed and measured for impact.'
+        ],
+        suggestions: [
+          'Set weekly action targets per KAM; auto-remind via workflows.',
+          'Standardize action templates (display, pricing, training) to speed execution.'
+        ]
+      });
+    }
+
+    if (metric === 'categoryMix' && category) {
+      // Compute category revenue and growth signals
+      let revenue = 0; const signals = [];
+      perStore.forEach(p => {
+        const cat = p.sales?.categorySales?.find(c => c.category === category);
+        if (cat) {
+          revenue += cat.revenue;
+          if (cat.vsTerritory > 0.03) signals.push(`${p.store.name}: outperforming territory by ${Math.round(cat.vsTerritory*100)}%`);
+          if (cat.growth > 0.08) signals.push(`${p.store.name}: strong growth ${Math.round(cat.growth*100)}%`);
+        }
+      });
+      return res.json({
+        title: `${category} — Category Insight`,
+        summary: `£${Math.round(revenue).toLocaleString()} revenue in last 90d across the territory.`,
+        drivers: signals.slice(0,5),
+        suggestions: [
+          `Increase space allocation where ${category} is outperforming territory.`,
+          'Run targeted promo + educational POS to amplify conversion.',
+          'Replicate winning placements from top stores to similar profiles.'
+        ]
+      });
+    }
+
+    return res.status(400).json({ error: 'Unsupported metric or missing parameters' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Simplified prep job (no Tribble AI generation)
 app.post('/kam/prep/start', async (req, res) => {
   try {

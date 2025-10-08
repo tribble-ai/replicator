@@ -19,9 +19,9 @@
     "format": "prettier --write src"
   },
   "dependencies": {
-    "@tribble/sdk-core": "workspace:*",
-    "@tribble/sdk-ingest": "workspace:*",
-    "@tribble/sdk-integrations": "workspace:*",
+    "@tribble/sdk-core": "*",
+    "@tribble/sdk-ingest": "*",
+    "@tribble/sdk-integrations": "*",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {

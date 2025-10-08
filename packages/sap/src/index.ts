@@ -77,6 +77,13 @@
  * @packageDocumentation
  */
 
+import { configManager } from './config';
+import type {
+  SAPSystemConfig,
+  TribbleConnectionConfig,
+  FioriAppType,
+} from './types';
+
 // ==================== Core Types ====================
 export type {
   SAPDeploymentTarget,
@@ -210,8 +217,6 @@ export function initializeSAPSDK(config?: {
   tribbleConfig?: Partial<TribbleConnectionConfig>;
   autoLoadEnv?: boolean;
 }) {
-  const { configManager } = require('./config');
-
   if (config?.autoLoadEnv !== false) {
     try {
       require('dotenv').config();
@@ -222,11 +227,11 @@ export function initializeSAPSDK(config?: {
   }
 
   if (config?.sapConfig) {
-    configManager.loadSAPConfig(config.sapConfig);
+    configManager.loadSAPConfig(config.sapConfig as SAPSystemConfig);
   }
 
   if (config?.tribbleConfig) {
-    configManager.loadTribbleConfig(config.tribbleConfig);
+    configManager.loadTribbleConfig(config.tribbleConfig as TribbleConnectionConfig);
   }
 
   return configManager;

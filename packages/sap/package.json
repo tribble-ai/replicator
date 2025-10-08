@@ -48,11 +48,11 @@
     "launchpad"
   ],
   "dependencies": {
-    "@tribble/sdk-core": "workspace:*",
-    "@tribble/sdk-agent": "workspace:*",
-    "@tribble/sdk-chat": "workspace:*",
-    "@tribble/sdk-ingest": "workspace:*",
-    "@tribble/sdk-auth": "workspace:*",
+    "@tribble/sdk-core": "*",
+    "@tribble/sdk-agent": "*",
+    "@tribble/sdk-chat": "*",
+    "@tribble/sdk-ingest": "*",
+    "@tribble/sdk-auth": "*",
     "commander": "^12.1.0",
     "chalk": "^5.3.0",
     "ora": "^8.0.1",

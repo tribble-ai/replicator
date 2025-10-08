@@ -1,0 +1,23 @@
+:root {
+  /* Primary/action blue tuned to Nestlé style */
+  --ios-blue: #1C75BC;        /* CAM primary */
+  --accent-2: #1C75BC;        /* NAM secondary */
+  --theme-brand-blue: #1C75BC;
+}
+
+/* Show co-brand elements when Nestlé theme is active */
+[data-brand="nestle"] .cobrand { display: flex !important; }
+
+/* Header tweaks */
+[data-brand="nestle"] .title::after {
+  /* subtle divider effect */
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px; margin: 0 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+}
+
+/* Optional: accent buttons hover to brand blue tint */
+[data-brand="nestle"] .ask-btn:active,
+[data-brand="nestle"] .teams-btn:active { background: rgba(28,117,188,0.1); }
+

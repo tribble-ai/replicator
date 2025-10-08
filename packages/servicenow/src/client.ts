@@ -47,8 +47,13 @@ export class ServiceNowClient {
         throw new Error(`OAuth2 authentication failed: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      this.authToken = `Bearer ${data.access_token}`;
+      const tokenPayload = (await response.json()) as {
+        access_token?: string;
+      };
+      if (!tokenPayload?.access_token) {
+        throw new Error('OAuth2 authentication failed: missing access token');
+      }
+      this.authToken = `Bearer ${tokenPayload.access_token}`;
     }
   }
 
@@ -78,14 +83,18 @@ export class ServiceNowClient {
     });
 
     if (!response.ok) {
-      const error: SNowError = await response.json();
-      throw new Error(
-        `ServiceNow API error: ${error.error?.message || response.statusText}`
-      );
+      const error = (await response.json().catch(() => ({}))) as Partial<SNowError>;
+      const message =
+        error?.error?.message ||
+        (typeof error?.error === 'string' ? error.error : undefined) ||
+        response.statusText;
+      throw new Error(`ServiceNow API error: ${message}`);
     }
 
-    const data: SNowResponse<T> = await response.json();
-    return data.result;
+    const data = (await response
+      .json()
+      .catch(() => ({ result: undefined }))) as Partial<SNowResponse<T>>;
+    return data.result as T;
   }
 
   /**

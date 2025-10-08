@@ -10,26 +10,19 @@
  * - Configuration validation
  */
 
-import { TribbleClient } from '@tribble/sdk-core';
 import { IngestClient } from '@tribble/sdk-ingest';
 import { createScheduler, describeCronSchedule } from '@tribble/sdk-integrations';
 import { createexceedraConnector, type exceedraDataSource } from './exceedra-connector.js';
 import { getConfig, type exceedraConfig } from './config.js';
 
 /**
- * Create Tribble client from configuration
+ * Create an Ingest client from configuration
  */
-function createTribbleClient(config: exceedraConfig): TribbleClient {
-  return new TribbleClient({
-    brain: {
-      baseUrl: config.tribble.brainUrl,
-      tokenProvider: async () => config.tribble.apiKey,
-    },
-    ingest: {
-      baseUrl: config.tribble.ingestUrl,
-      tokenProvider: async () => config.tribble.apiKey,
-    },
-  });
+function createIngestClient(config: exceedraConfig): IngestClient {
+  return new IngestClient({
+    baseUrl: config.tribble.ingestUrl,
+    tokenProvider: async () => config.tribble.apiKey,
+  } as any);
 }
 
 /**
@@ -56,7 +49,7 @@ async function runSync(options: {
   console.log(`  Sync Mode: ${options.fullSync ? 'Full' : 'Incremental'}\n`);
 
   // Create Tribble client
-  const tribbleClient = createTribbleClient(config);
+  const ingestClient = createIngestClient(config);
 
   // Create exceedra connector
   const connector = createexceedraConnector(
@@ -82,7 +75,7 @@ async function runSync(options: {
   // Initialize connector
   await connector.initialize({
     tribble: {
-      ingest: tribbleClient.ingest,
+      ingest: ingestClient,
     },
     config: {
       debugLogging: config.advanced.debugLogging,
@@ -155,7 +148,7 @@ async function runScheduled() {
   console.log(`  Checkpoint File: ${config.sync.checkpointFile}\n`);
 
   // Create Tribble client
-  const tribbleClient = createTribbleClient(config);
+  const ingestClient = createIngestClient(config);
 
   // Create exceedra connector
   const connector = createexceedraConnector(
@@ -181,7 +174,7 @@ async function runScheduled() {
   // Initialize connector
   await connector.initialize({
     tribble: {
-      ingest: tribbleClient.ingest,
+      ingest: ingestClient,
     },
     config: {
       debugLogging: config.advanced.debugLogging,
@@ -258,7 +251,7 @@ async function validate() {
   console.log(`  Data Sources: ${config.sync.sources.join(', ')}`);
 
   // Create Tribble client
-  const tribbleClient = createTribbleClient(config);
+  const ingestClient = createIngestClient(config);
 
   // Create exceedra connector
   const connector = createexceedraConnector(
@@ -284,7 +277,7 @@ async function validate() {
   // Initialize connector
   await connector.initialize({
     tribble: {
-      ingest: tribbleClient.ingest,
+      ingest: ingestClient,
     },
     config: {},
   });

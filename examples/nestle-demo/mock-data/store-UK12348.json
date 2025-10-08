@@ -22,10 +22,10 @@
     {
       "visitId": "VIS-UK12348-003",
       "storeId": "UK12348",
-      "visitDate": "2025-07-29",
+      "visitDate": "2025-08-06",
       "kamEmail": "sarah.williams@nestle.com",
       "kamName": "Sarah Williams",
-      "duration": 45,
+      "duration": 69,
       "objectives": [
         "Review category performance",
         "Resolve OOS issues",
@@ -53,10 +53,10 @@
     {
       "visitId": "VIS-UK12348-002",
       "storeId": "UK12348",
-      "visitDate": "2025-08-19",
+      "visitDate": "2025-08-27",
       "kamEmail": "sarah.williams@nestle.com",
       "kamName": "Sarah Williams",
-      "duration": 53,
+      "duration": 56,
       "objectives": [
         "Introduce Q4 Immunity campaign",
         "Resolve OOS issues",
@@ -90,10 +90,10 @@
     {
       "visitId": "VIS-UK12348-001",
       "storeId": "UK12348",
-      "visitDate": "2025-09-09",
+      "visitDate": "2025-09-17",
       "kamEmail": "sarah.williams@nestle.com",
       "kamName": "Sarah Williams",
-      "duration": 74,
+      "duration": 67,
       "objectives": [
         "Check winter display execution",
         "Resolve OOS issues",
@@ -122,29 +122,29 @@
   ],
   "sapSales": {
     "storeId": "UK12348",
-    "reportDate": "2025-09-30",
+    "reportDate": "2025-10-08",
     "period": "90 days",
     "categorySales": [
       {
         "category": "Adult Nutrition",
-        "revenue": 18404,
-        "units": 2165,
+        "revenue": 24880,
+        "units": 2927,
         "growth": 0.08,
         "vsTerritory": 0.02,
         "share": 0.42
       },
       {
         "category": "Immunity",
-        "revenue": 19745,
-        "units": 2323,
+        "revenue": 21638,
+        "units": 2546,
         "growth": 0.12,
         "vsTerritory": 0.05,
         "share": 0.35
       },
       {
         "category": "Vitamins",
-        "revenue": 16891,
-        "units": 1987,
+        "revenue": 24186,
+        "units": 2845,
         "growth": 0.03,
         "vsTerritory": -0.01,
         "share": 0.23
@@ -155,111 +155,111 @@
         "sku": "NHS-001",
         "name": "Boost Plus Vanilla 200ml",
         "category": "Adult Nutrition",
-        "unitsSold": 471,
-        "revenue": 1172,
+        "unitsSold": 482,
+        "revenue": 1200,
         "growth": 0.15,
         "oosIncidents": 2,
         "avgPrice": 2.49,
-        "priceVsTerritory": 0.001299827249110666
+        "priceVsTerritory": 0.047575092053658466
       },
       {
         "sku": "NHS-002",
         "name": "Boost Plus Chocolate 200ml",
         "category": "Adult Nutrition",
-        "unitsSold": 457,
-        "revenue": 1139,
-        "growth": -0.015684167690029432,
+        "unitsSold": 342,
+        "revenue": 851,
+        "growth": 0.001291303394960728,
         "oosIncidents": 0,
         "avgPrice": 2.49,
-        "priceVsTerritory": 0.020108911542324567
+        "priceVsTerritory": 0.02748740495215314
       },
       {
         "sku": "NHS-003",
         "name": "Boost Glucose Control",
         "category": "Adult Nutrition",
-        "unitsSold": 301,
-        "revenue": 900,
-        "growth": -0.009307133423505691,
+        "unitsSold": 342,
+        "revenue": 1023,
+        "growth": 0.031904111696735196,
         "oosIncidents": 0,
         "avgPrice": 2.99,
-        "priceVsTerritory": -0.042330879850021465
+        "priceVsTerritory": -0.030287920962761252
       },
       {
         "sku": "NHS-004",
         "name": "Resource Protein Drink",
         "category": "Adult Nutrition",
-        "unitsSold": 411,
-        "revenue": 1147,
+        "unitsSold": 394,
+        "revenue": 1099,
         "growth": 0.15,
         "oosIncidents": 0,
         "avgPrice": 2.79,
-        "priceVsTerritory": 0.0009476715071190939
+        "priceVsTerritory": -0.04509936428685753
       },
       {
         "sku": "NHS-101",
         "name": "Immunity+ Daily Support",
         "category": "Immunity",
-        "unitsSold": 391,
-        "revenue": 5076,
-        "growth": 0.036093746138080696,
-        "oosIncidents": 1,
+        "unitsSold": 421,
+        "revenue": 5464,
+        "growth": 0.025590125132914917,
+        "oosIncidents": 0,
         "avgPrice": 12.99,
-        "priceVsTerritory": 0.041747841052626744
+        "priceVsTerritory": -0.04329726704027675
       },
       {
         "sku": "NHS-102",
         "name": "Immunity+ Kids Gummies",
         "category": "Immunity",
-        "unitsSold": 344,
-        "revenue": 3440,
-        "growth": 0.021611882715225423,
+        "unitsSold": 481,
+        "revenue": 4803,
+        "growth": 0.04723045531397427,
         "oosIncidents": 0,
         "avgPrice": 9.99,
-        "priceVsTerritory": 0.04958540877082744
+        "priceVsTerritory": -0.023048468952871805
       },
       {
         "sku": "NHS-103",
         "name": "Immunity+ Elderberry Syrup",
         "category": "Immunity",
-        "unitsSold": 452,
-        "revenue": 6781,
+        "unitsSold": 343,
+        "revenue": 5135,
         "growth": 0.15,
         "oosIncidents": 0,
         "avgPrice": 14.99,
-        "priceVsTerritory": 0.03592037321905171
+        "priceVsTerritory": -0.03486283650599842
       },
       {
         "sku": "NHS-201",
         "name": "Vitality Multi-Vitamin",
         "category": "Vitamins",
-        "unitsSold": 416,
-        "revenue": 3741,
-        "growth": 0.07223147198861765,
+        "unitsSold": 409,
+        "revenue": 3676,
+        "growth": 0.0014286161238352864,
         "oosIncidents": 0,
         "avgPrice": 8.99,
-        "priceVsTerritory": -0.03372223544352489
+        "priceVsTerritory": -0.031826204047826524
       },
       {
         "sku": "NHS-202",
         "name": "Vitamin D3 1000IU",
         "category": "Vitamins",
-        "unitsSold": 436,
-        "revenue": 3050,
-        "growth": 0.00822359574905622,
+        "unitsSold": 313,
+        "revenue": 2185,
+        "growth": -0.004592388855582245,
         "oosIncidents": 0,
         "avgPrice": 6.99,
-        "priceVsTerritory": 0.014057202899660642
+        "priceVsTerritory": -0.04907976726050492
       },
       {
         "sku": "NHS-203",
         "name": "Omega-3 Fish Oil",
         "category": "Vitamins",
-        "unitsSold": 403,
-        "revenue": 4837,
+        "unitsSold": 389,
+        "revenue": 4666,
         "growth": 0.15,
-        "oosIncidents": 1,
+        "oosIncidents": 0,
         "avgPrice": 11.99,
-        "priceVsTerritory": -0.01293356345238441
+        "priceVsTerritory": 0.031114652052668973
       }
     ],
     "territoryComparison": {}
@@ -269,128 +269,128 @@
     "period": "12 months",
     "trend": [
       {
-        "month": "2024-10",
-        "totalRevenue": 24193,
-        "totalUnits": 2630,
-        "adultNutritionRevenue": 10161,
-        "immunityRevenue": 8468,
-        "vitaminsRevenue": 5565,
-        "footfall": 13112,
-        "conversionRate": 0.22115889617914328
-      },
-      {
         "month": "2024-11",
-        "totalRevenue": 29429,
-        "totalUnits": 3199,
-        "adultNutritionRevenue": 12360,
-        "immunityRevenue": 10300,
-        "vitaminsRevenue": 6769,
-        "footfall": 13056,
-        "conversionRate": 0.19553884116055115
+        "totalRevenue": 27200,
+        "totalUnits": 2957,
+        "adultNutritionRevenue": 11424,
+        "immunityRevenue": 9520,
+        "vitaminsRevenue": 6256,
+        "footfall": 13903,
+        "conversionRate": 0.20851261336163462
       },
       {
         "month": "2024-12",
-        "totalRevenue": 28403,
-        "totalUnits": 3087,
-        "adultNutritionRevenue": 11929,
-        "immunityRevenue": 9941,
-        "vitaminsRevenue": 6533,
-        "footfall": 14086,
-        "conversionRate": 0.22615123274089385
+        "totalRevenue": 30547,
+        "totalUnits": 3320,
+        "adultNutritionRevenue": 12830,
+        "immunityRevenue": 10691,
+        "vitaminsRevenue": 7026,
+        "footfall": 14276,
+        "conversionRate": 0.21419331829622856
       },
       {
         "month": "2025-01",
-        "totalRevenue": 19539,
-        "totalUnits": 2124,
-        "adultNutritionRevenue": 8207,
-        "immunityRevenue": 6839,
-        "vitaminsRevenue": 4494,
-        "footfall": 14471,
-        "conversionRate": 0.182904615076329
+        "totalRevenue": 19998,
+        "totalUnits": 2174,
+        "adultNutritionRevenue": 8399,
+        "immunityRevenue": 6999,
+        "vitaminsRevenue": 4600,
+        "footfall": 12501,
+        "conversionRate": 0.18997697953163142
+      },
+      {
+        "month": "2025-02",
+        "totalRevenue": 19670,
+        "totalUnits": 2138,
+        "adultNutritionRevenue": 8262,
+        "immunityRevenue": 6885,
+        "vitaminsRevenue": 4524,
+        "footfall": 12017,
+        "conversionRate": 0.206783261737519
       },
       {
         "month": "2025-03",
-        "totalRevenue": 22074,
-        "totalUnits": 2399,
-        "adultNutritionRevenue": 9271,
-        "immunityRevenue": 7726,
-        "vitaminsRevenue": 5077,
-        "footfall": 12424,
-        "conversionRate": 0.20451450348776182
-      },
-      {
-        "month": "2025-03",
-        "totalRevenue": 22100,
-        "totalUnits": 2402,
-        "adultNutritionRevenue": 9282,
-        "immunityRevenue": 7735,
-        "vitaminsRevenue": 5083,
-        "footfall": 12220,
-        "conversionRate": 0.20841004673913016
+        "totalRevenue": 24108,
+        "totalUnits": 2620,
+        "adultNutritionRevenue": 10126,
+        "immunityRevenue": 8438,
+        "vitaminsRevenue": 5545,
+        "footfall": 13515,
+        "conversionRate": 0.21845900650939296
       },
       {
         "month": "2025-04",
-        "totalRevenue": 21213,
-        "totalUnits": 2306,
-        "adultNutritionRevenue": 8909,
-        "immunityRevenue": 7424,
-        "vitaminsRevenue": 4879,
-        "footfall": 14821,
-        "conversionRate": 0.20430808261432898
+        "totalRevenue": 23053,
+        "totalUnits": 2506,
+        "adultNutritionRevenue": 9682,
+        "immunityRevenue": 8068,
+        "vitaminsRevenue": 5302,
+        "footfall": 12398,
+        "conversionRate": 0.2224500263442143
       },
       {
         "month": "2025-05",
-        "totalRevenue": 23676,
-        "totalUnits": 2574,
-        "adultNutritionRevenue": 9944,
-        "immunityRevenue": 8287,
-        "vitaminsRevenue": 5446,
-        "footfall": 14016,
-        "conversionRate": 0.20503915061696676
+        "totalRevenue": 26430,
+        "totalUnits": 2873,
+        "adultNutritionRevenue": 11100,
+        "immunityRevenue": 9250,
+        "vitaminsRevenue": 6079,
+        "footfall": 12428,
+        "conversionRate": 0.2187494991708362
       },
       {
         "month": "2025-06",
-        "totalRevenue": 25082,
-        "totalUnits": 2726,
-        "adultNutritionRevenue": 10535,
-        "immunityRevenue": 8779,
-        "vitaminsRevenue": 5769,
-        "footfall": 12571,
-        "conversionRate": 0.19332475040555513
+        "totalRevenue": 24541,
+        "totalUnits": 2667,
+        "adultNutritionRevenue": 10307,
+        "immunityRevenue": 8589,
+        "vitaminsRevenue": 5644,
+        "footfall": 13628,
+        "conversionRate": 0.18431829598689786
       },
       {
         "month": "2025-07",
-        "totalRevenue": 25834,
-        "totalUnits": 2808,
-        "adultNutritionRevenue": 10850,
-        "immunityRevenue": 9042,
-        "vitaminsRevenue": 5942,
-        "footfall": 12353,
-        "conversionRate": 0.20414784933860536
+        "totalRevenue": 23907,
+        "totalUnits": 2599,
+        "adultNutritionRevenue": 10041,
+        "immunityRevenue": 8367,
+        "vitaminsRevenue": 5499,
+        "footfall": 14420,
+        "conversionRate": 0.22468831090444033
       },
       {
         "month": "2025-08",
-        "totalRevenue": 22121,
-        "totalUnits": 2404,
-        "adultNutritionRevenue": 9291,
-        "immunityRevenue": 7742,
-        "vitaminsRevenue": 5088,
-        "footfall": 13540,
-        "conversionRate": 0.18395515341589053
+        "totalRevenue": 22193,
+        "totalUnits": 2412,
+        "adultNutritionRevenue": 9321,
+        "immunityRevenue": 7768,
+        "vitaminsRevenue": 5105,
+        "footfall": 14714,
+        "conversionRate": 0.18324710489240204
       },
       {
         "month": "2025-09",
-        "totalRevenue": 21663,
-        "totalUnits": 2355,
-        "adultNutritionRevenue": 9098,
-        "immunityRevenue": 7582,
-        "vitaminsRevenue": 4982,
-        "footfall": 14612,
-        "conversionRate": 0.2233033724883251
+        "totalRevenue": 23076,
+        "totalUnits": 2508,
+        "adultNutritionRevenue": 9692,
+        "immunityRevenue": 8077,
+        "vitaminsRevenue": 5307,
+        "footfall": 14857,
+        "conversionRate": 0.197091996809867
+      },
+      {
+        "month": "2025-10",
+        "totalRevenue": 23220,
+        "totalUnits": 2524,
+        "adultNutritionRevenue": 9752,
+        "immunityRevenue": 8127,
+        "vitaminsRevenue": 5341,
+        "footfall": 14742,
+        "conversionRate": 0.22696529588430606
       }
     ],
     "kpis": {
-      "avgMonthlyRevenue": 23777,
+      "avgMonthlyRevenue": 23995,
       "yoyGrowth": 0.08,
       "categoryMix": {
         "adultNutrition": 0.42,
@@ -403,7 +403,7 @@
     {
       "storeId": "UK12345",
       "storeName": "Tesco Extra Manchester Arndale",
-      "similarity": 0.8592262277748802,
+      "similarity": 0.940655266605074,
       "matchFactors": [
         "Region",
         "Store Format"
@@ -422,7 +422,7 @@
   "competitorIntel": [
     {
       "retailer": "Boots",
-      "weekCommencing": "2025-09-30",
+      "weekCommencing": "2025-10-08",
       "promotions": [
         {
           "category": "Adult Nutrition",
@@ -446,7 +446,7 @@
     },
     {
       "retailer": "Superdrug",
-      "weekCommencing": "2025-09-30",
+      "weekCommencing": "2025-10-08",
       "promotions": [
         {
           "category": "Adult Nutrition",

@@ -95,7 +95,7 @@ export class UpdateSetGenerator {
       <id>${widget.id}</id>
       <name>${this.escapeXml(widget.name)}</name>
       <description>${this.escapeXml(widget.description)}</description>
-      <script><![CDATA[${widget.script}]]></script>
+      <script><![CDATA[${widget.script ?? widget.serverScript ?? ''}]]></script>
       <client_script><![CDATA[${widget.clientScript}]]></client_script>
       <template><![CDATA[${widget.template}]]></template>
       <css>${this.escapeXml(widget.css)}</css>

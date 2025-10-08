@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tribble.ai/schemas/extension.schema.json",
+  "title": "Tribble Extension Manifest",
+  "type": "object",
+  "required": ["name", "version", "sdk", "capabilities", "intents"],
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "version": { "type": "string" },
+    "sdk": { "type": "string" },
+    "capabilities": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-zA-Z0-9_.-]+:v\\d+$" },
+      "minItems": 1
+    },
+    "intents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["when", "steps"],
+        "properties": {
+          "when": { "type": "string" },
+          "steps": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "required": ["type", "capability"],
+                  "properties": {
+                    "type": { "const": "call" },
+                    "capability": { "type": "string", "pattern": "^[a-zA-Z0-9_.-]+:v\\d+$" },
+                    "params": { "type": ["object", "null" ] }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "required": ["type", "strategy"],
+                  "properties": {
+                    "type": { "const": "dedupe" },
+                    "strategy": { "enum": ["exact", "semantic", "semantic+exact"] },
+                    "threshold": { "type": ["number", "null"] }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "required": ["type", "source"],
+                  "properties": {
+                    "type": { "const": "enrich" },
+                    "source": { "type": "string" }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "required": ["type", "rule", "owners"],
+                  "properties": {
+                    "type": { "const": "route" },
+                    "rule": { "type": "string" },
+                    "owners": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "policies": {
+      "type": "object",
+      "properties": {
+        "pii": { "enum": ["allow", "redact", "deny"] },
+        "data_scope": { "enum": ["tenant", "global"] },
+        "cost_limit_usd": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "permissions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "given_event", "expect"],
+        "properties": {
+          "name": { "type": "string" },
+          "given_event": { "type": "string" },
+          "expect": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
+

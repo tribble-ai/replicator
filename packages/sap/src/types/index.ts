@@ -247,12 +247,15 @@ export type FioriAppType =
   | 'list-report'
   | 'worklist'
   | 'analytical-list-page'
-  | 'freestyle';
+  | 'freestyle'
+  | 'chat'
+  | 'upload';
 
 /**
  * Fiori application manifest configuration
  */
 export interface FioriManifest {
+  _version?: string;
   /** Application ID */
   'sap.app': {
     id: string;
@@ -309,6 +312,7 @@ export interface FioriDataSource {
 export interface FioriModel {
   type?: string;
   dataSource?: string;
+  preload?: boolean;
   settings?: Record<string, any>;
 }
 

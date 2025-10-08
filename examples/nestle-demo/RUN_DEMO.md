@@ -8,11 +8,12 @@
 cd /Users/sunilrao/dev/SDK/examples/nestle-demo && npm run demo
 ```
 
-### 2. Open Mobile Demo
+### 2. Open Mobile Demos
 
 **In your browser, go to:**
 ```
 http://localhost:3000/mobile.html
+http://localhost:3000/mobile-nam.html
 ```
 
 **Recommended:**
@@ -72,6 +73,22 @@ Backup options in order:
 - **DEMO_SCRIPT.md** - Full demo script with talking points
 - **TRIBBLE_PLATFORM_VALUE.md** - Why Tribble vs generic AI
 - **README.md** - Complete platform capabilities
+
+---
+
+## National Account Manager (Tablet) View
+
+- Open: `http://localhost:3000/mobile-nam.html`
+- Purpose: Territory-level view for a National Account Manager (NAM)
+- Shows:
+  - Territory KPIs (revenue 90d, avg YoY growth, OOS, actions)
+  - Category mix across the territory
+  - Store leaderboard by revenue
+  - KAM deployment and quick coaching needs
+  - Recent calls from Tribble Recorder with transcript snippets
+  - Risk alerts (pricing variance, OOS hotspots)
+
+Use this to contrast CAM store-level depth vs NAM territory altitude.
 
 ---
 

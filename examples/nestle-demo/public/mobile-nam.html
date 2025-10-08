@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tribble · Territory Command (NAM)</title>
+  <meta name="theme-color" content="#0F172A">
+  <meta name="description" content="National Account Manager view – territory coaching and performance">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <script>
+    (function(){
+      try {
+        const u=new URL(location.href);
+        if(u.searchParams.get('brand')==='nestle'){
+          const link=document.createElement('link');
+          link.rel='stylesheet'; link.href='/themes/nestle.css';
+          document.head.appendChild(link);
+          document.documentElement.setAttribute('data-brand','nestle');
+        }
+      } catch {}
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #0f172a;         /* slate-900 */
+      --bg-2: #111827;       /* gray-900 */
+      --panel: #111827;      /* gray-900 */
+      --panel-2: #0b1220;    /* deep */
+      --text: #e5e7eb;       /* gray-200 */
+      --muted: #9ca3af;      /* gray-400 */
+      --accent: #22c55e;     /* green-500 */
+      --accent-2: #3b82f6;   /* blue-500 */
+      --danger: #ef4444;     /* red-500 */
+      --warn: #f59e0b;       /* amber-500 */
+      --divider: rgba(255,255,255,0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: #1a1a1a; color: var(--text);
+      font: 14px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* iPad-style frame (desktop presentation) */
+    .tablet-stage { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .tablet-frame {
+      position: relative; width: 1024px; height: 768px; border-radius: 36px;
+      background: #000; padding: 18px; box-shadow: 0 30px 70px rgba(0,0,0,0.6), 0 0 0 12px #101010, 0 0 0 14px #050505;
+    }
+    .tablet-frame::after { /* thin bevel */ content: ''; position: absolute; inset: 10px; border-radius: 28px; pointer-events: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+    .tablet-camera { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; background: #222; border-radius: 50%; box-shadow: 0 0 0 2px #0a0a0a, inset 0 0 0 1px rgba(255,255,255,0.1); }
+    .tablet-content { position: relative; width: 100%; height: 100%; border-radius: 24px; overflow: hidden; }
+    .tablet-scroll { width: 100%; height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; background: var(--bg); }
+
+    @media (max-width: 1100px) { /* collapse to full-bleed on small screens */
+      .tablet-stage { padding: 0; }
+      .tablet-frame { width: 100vw; height: 100vh; border-radius: 0; padding: 0; box-shadow: none; }
+      .tablet-frame::after, .tablet-camera { display: none; }
+      .tablet-content { border-radius: 0; }
+    }
+    .shell { max-width: 1200px; margin: 0 auto; padding: 16px 24px 40px; }
+    header {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 8px 0 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand .logo { width: 28px; height: 28px; border-radius: 8px; display: inline-block; }
+    .brand .title { font-size: 18px; font-weight: 700; letter-spacing: .2px; }
+    .subtitle { color: var(--muted); font-size: 12px; }
+    .cobrand { display: none; align-items: center; gap: 8px; }
+    .cobrand img { height: 16px; opacity: 0.9; }
+    .righthead { display: flex; align-items: center; gap: 12px; }
+    .pill { padding: 6px 10px; border: 1px solid var(--divider); border-radius: 999px; color: var(--muted); font-size: 12px; }
+    .filters { display: flex; gap: 10px; }
+    select, button { background: var(--panel); color: var(--text); border: 1px solid var(--divider); border-radius: 8px; padding: 8px 10px; }
+    button { cursor: pointer; }
+
+    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; align-items: start; }
+    .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .card { background: var(--panel); border: 1px solid var(--divider); border-radius: 14px; padding: 14px; }
+    .card h3 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 0 0 8px; letter-spacing: .2px; }
+    .kpi { font-size: 24px; font-weight: 700; }
+    .kpi small { font-size: 11px; color: var(--muted); font-weight: 500; margin-left: 6px; }
+
+    .mix { display: flex; flex-direction: column; gap: 10px; }
+    .mix .bar { height: 10px; background: var(--panel-2); border-radius: 999px; overflow: hidden; border: 1px solid var(--divider); }
+    .mix .bar > div { height: 100%; }
+    .legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+    .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td { text-align: left; padding: 8px 6px; font-size: 13px; border-bottom: 1px solid var(--divider); }
+    .muted { color: var(--muted); }
+    .ok { color: var(--accent); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--danger); }
+
+    .kam-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .kam { border: 1px solid var(--divider); border-radius: 12px; padding: 10px; background: var(--panel-2); }
+    .kam .name { font-weight: 700; }
+    .kam .meta { font-size: 12px; color: var(--muted); }
+    .pill-sm { font-size: 11px; border: 1px solid var(--divider); border-radius: 999px; padding: 3px 8px; color: var(--muted); }
+
+    .call { display: grid; grid-template-columns: auto 1fr; gap: 10px; padding: 10px; border: 1px solid var(--divider); border-radius: 10px; background: var(--panel-2); }
+    .call .badge { width: 8px; border-radius: 999px; }
+    .call .head { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    .call .snippet { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .call:hover { border-color: rgba(255,255,255,0.18); cursor: pointer; }
+
+    @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } .kam-list { grid-template-columns: 1fr 1fr; } aside { position: static; } }
+    @media (max-width: 760px)  { .row { grid-template-columns: 1fr 1fr; } .kam-list { grid-template-columns: 1fr; } }
+
+    /* Right rail tabs */
+    .rail-card { padding: 0; overflow: hidden; }
+    .rail-tabs { display:flex; gap:0; border-bottom: 1px solid var(--divider); background: var(--panel-2); }
+    .rail-tab { flex:1; padding: 10px; background: transparent; border:none; color: var(--muted); font-weight: 600; cursor: pointer; border-right: 1px solid var(--divider); }
+    .rail-tab:last-child { border-right: none; }
+    .rail-tab.active { color: var(--text); background: var(--panel); }
+    .rail-content { max-height: 560px; overflow: auto; padding: 10px; }
+    .rail-view { display: none; }
+    .rail-view.active { display: block; }
+    .rail-item { padding: 10px; border:1px solid var(--divider); border-radius: 10px; background: var(--panel); margin-bottom: 8px; }
+    .rail-item .head { display:flex; align-items:center; justify-content: space-between; gap:6px; font-weight:700; }
+    .rail-item .sub { font-size:12px; color: var(--muted); margin-top: 4px; }
+    .rail-item .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+    .rail-item .tag { font-size: 11px; color: var(--muted); border: 1px solid var(--divider); border-radius: 999px; padding: 2px 8px; }
+
+    /* Call Details Overlay */
+    .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .overlay.visible { display: flex; }
+    .modal { width: 940px; max-width: calc(100vw - 40px); max-height: calc(100vh - 40px); background: var(--panel); border: 1px solid var(--divider); border-radius: 16px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+    .modal-header { display:flex; align-items:center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--divider); background: var(--panel-2); }
+    .modal-title { font-weight: 700; }
+    .modal-body { display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; padding: 14px; overflow: auto; }
+    .modal-section { background: var(--panel-2); border: 1px solid var(--divider); border-radius: 12px; padding: 12px; }
+    .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; font-size: 13px; color: var(--muted); }
+    .bar { height: 10px; background: #0b1220; border:1px solid var(--divider); border-radius: 999px; overflow:hidden; }
+    .bar > div { height: 100%; }
+    .tag { font-size: 11px; color: var(--muted); border: 1px solid var(--divider); border-radius: 999px; padding: 2px 8px; margin-right: 6px; display: inline-block; }
+    .list { margin: 6px 0 0; padding-left: 16px; color: var(--muted); }
+    .transcript { max-height: 380px; overflow: auto; font-size: 13px; }
+    .turn { margin: 8px 0; }
+    .speaker { font-weight: 700; margin-right: 6px; }
+    .metric { font-size: 22px; font-weight: 700; }
+
+    /* Sticky right rail */
+    aside { position: sticky; top: 16px; height: fit-content; }
+
+    /* Insight popover */
+    .insightable { position: relative; }
+    .info-btn { position: absolute; right: 10px; top: 10px; color: var(--muted); font-size: 16px; cursor: pointer; }
+    .insight-popover { position: absolute; z-index: 2000; width: 340px; max-width: 90vw; background: var(--panel); border: 1px solid var(--divider); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
+    .insight-popover.visible { display: block; }
+    .insight-popover .head { padding: 10px 12px; border-bottom: 1px solid var(--divider); font-weight: 700; }
+    .insight-popover .body { padding: 10px 12px; }
+    .insight-popover .muted { color: var(--muted); font-size: 12px; }
+    .insight-popover ul { margin: 6px 0; padding-left: 16px; }
+    .insight-actions { display:flex; gap:8px; padding: 8px 12px 12px; }
+    .insight-actions button { flex:1; }
+  </style>
+</head>
+<body>
+  <div class="tablet-stage">
+    <div class="tablet-frame">
+      <div class="tablet-camera"></div>
+      <div class="tablet-content">
+        <div class="tablet-scroll">
+          <div class="shell">
+    <header>
+      <div class="brand">
+        <img class="logo" src="/tribble-logo.svg" alt="Tribble">
+        <div>
+          <div class="title">Tribble · Territory Command</div>
+          <div class="subtitle">National Account Manager · Coaching & Performance</div>
+        </div>
+        <!-- Overlays (constrained to tablet frame) -->
+        <div class="overlay" id="callOverlay">
+          <div class="modal">
+            <div class="modal-header">
+              <div>
+                <div class="modal-title" id="callTitle">Call Details</div>
+                <div class="muted" id="callMeta"></div>
+              </div>
+              <button onclick="closeCallModal()">Close</button>
+            </div>
+            <div class="modal-body">
+              <div class="modal-section">
+                <h3 style="margin:0 0 8px; color: var(--muted);">Transcript</h3>
+                <div class="transcript" id="callTranscript"></div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <div class="modal-section">
+                  <h3 style="margin:0 0 8px; color: var(--muted);">AI Analysis</h3>
+                  <div class="kv" id="callMetrics"></div>
+                  <div style="margin-top:10px;">
+                    <div class="muted" style="margin-bottom:6px;">Talk Ratio</div>
+                    <div class="bar"><div id="talkCam" style="background:#3b82f6;width:50%"></div></div>
+                    <div class="muted" style="font-size:12px; margin-top:4px;">CAM <span id="talkCamPct">50%</span> • Manager <span id="talkMgrPct">50%</span></div>
+                  </div>
+                  <div style="margin-top:10px;">
+                    <div class="muted" style="margin-bottom:6px;">Sentiment Trend</div>
+                    <div class="bar" id="sentTrend"></div>
+                  </div>
+                </div>
+                <div class="modal-section">
+                  <h3 style="margin:0 0 8px; color: var(--muted);">Coaching & Actions</h3>
+                  <div id="callCoaching" class="muted"></div>
+                  <ul id="callActions" class="list"></ul>
+                  <ul id="callFollowUps" class="list"></ul>
+                  <div id="callTopics" style="margin-top:8px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-popover" id="insightPopover">
+          <div class="head" id="insightTitle">Insight</div>
+          <div class="body">
+            <div class="muted" id="insightSummary"></div>
+            <ul id="insightDrivers"></ul>
+            <div class="muted" style="margin-top:6px;">Suggested actions</div>
+            <ul id="insightSuggestions"></ul>
+          </div>
+          <div class="insight-actions">
+            <button onclick="askAboutInsight()"><img src="/ask-tribble.png" onerror="this.src='/tribble-logo.svg'" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"/>Ask Tribble</button>
+            <button onclick="closeInsight()">Close</button>
+          </div>
+        </div>
+      </div>
+      <div class="righthead">
+        <div class="pill" id="now">--:--</div>
+        <div class="filters">
+          <select id="regionFilter">
+            <option value="all">All Territories</option>
+          </select>
+          <button id="refresh">Refresh</button>
+        </div>
+        <div class="cobrand"><span class="muted" style="font-size:12px;">for</span> <img src="/nestle-hs.svg" alt="Nestlé Health Science"></div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section>
+        <div class="row">
+          <div class="card insightable" data-metric="revenue90d">
+            <h3>Revenue (90d)</h3>
+            <div class="kpi" id="kpiRevenue">—</div>
+            <div class="info-btn" title="Agent insight" onclick="openMetricInsight(event)">ⓘ</div>
+          </div>
+          <div class="card insightable" data-metric="yoy">
+            <h3>YoY Growth (avg)</h3>
+            <div class="kpi" id="kpiYoY">—</div>
+            <div class="info-btn" title="Agent insight" onclick="openMetricInsight(event)">ⓘ</div>
+          </div>
+          <div class="card insightable" data-metric="oos">
+            <h3>OOS Incidents</h3>
+            <div class="kpi" id="kpiOOS">—</div>
+            <div class="info-btn" title="Agent insight" onclick="openMetricInsight(event)">ⓘ</div>
+          </div>
+          <div class="card insightable" data-metric="actions">
+            <h3>Actions (60d)</h3>
+            <div class="kpi" id="kpiActions">—</div>
+            <div class="info-btn" title="Agent insight" onclick="openMetricInsight(event)">ⓘ</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <h3>Category Mix</h3>
+          <div class="mix">
+            <div class="bar"><div id="mixBar" style="width:0;background:linear-gradient(90deg,#34d399,#60a5fa,#f59e0b);"></div></div>
+            <div class="legend" id="mixLegend"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <h3>Store Leaderboard (by revenue)</h3>
+          <table class="table" id="leaderboard">
+            <thead><tr><th>Store</th><th>Retailer</th><th>Revenue (90d)</th><th>YoY</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <h3>KAM Deployment</h3>
+          <div class="kam-list" id="kamList"></div>
+        </div>
+      </section>
+
+      <aside>
+        <div class="card rail-card">
+          <div class="rail-tabs">
+            <button class="rail-tab active" data-tab="coaching">Coaching <span class="muted" id="countCoaching"></span></button>
+            <button class="rail-tab" data-tab="calls">Calls <span class="muted" id="countCalls"></span></button>
+            <button class="rail-tab" data-tab="risks">Risks <span class="muted" id="countRisks"></span></button>
+          </div>
+          <div class="rail-content">
+            <div class="rail-view active" id="railCoaching"></div>
+            <div class="rail-view" id="railCalls"></div>
+            <div class="rail-view" id="railRisks"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <script>
+    const fmtCurrency = v => v == null ? '—' : '£' + (Math.round(v).toLocaleString());
+    const fmtPct = v => v == null ? '—' : (v * 100).toFixed(1) + '%';
+
+    function tickClock(){
+      const d = new Date();
+      const opts = { weekday:'short', hour:'2-digit', minute:'2-digit'};
+      document.getElementById('now').textContent = d.toLocaleString(undefined,opts);
+    }
+
+    async function loadOverview(){
+      const res = await fetch('/nam/overview');
+      if (!res.ok) throw new Error('Failed to load overview');
+      return res.json();
+    }
+    async function loadKAMs(){
+      const res = await fetch('/nam/kams');
+      if (!res.ok) throw new Error('Failed to load kams');
+      return res.json();
+    }
+    async function loadCalls(){
+      const res = await fetch('/nam/calls');
+      if (!res.ok) throw new Error('Failed to load calls');
+      return res.json();
+    }
+
+    function renderOverview(data){
+      const { summary, categoryMix, leaderboard, riskAlerts } = data;
+      document.getElementById('kpiRevenue').textContent = fmtCurrency(summary.revenue90d);
+      document.getElementById('kpiYoY').textContent = fmtPct(summary.yoyGrowthAvg);
+      document.getElementById('kpiOOS').textContent = summary.oosIncidents ?? '—';
+      document.getElementById('kpiActions').textContent = summary.actionsLast60d ?? '—';
+
+      // Category mix bar + legend
+      const total = categoryMix.reduce((s, c) => s + c.revenue, 0) || 1;
+      let offset = 0; let gradients = ['#34d399','#60a5fa','#f59e0b','#f472b6','#a78bfa'];
+      const bar = document.getElementById('mixBar');
+      bar.innerHTML = '';
+      let accum = 0;
+      categoryMix.forEach((c, i) => {
+        const w = Math.round((c.revenue / total) * 100);
+        const seg = document.createElement('div');
+        seg.style.width = w + '%';
+        seg.style.float = 'left';
+        seg.style.background = gradients[i % gradients.length];
+        bar.appendChild(seg);
+        accum += w;
+      });
+      const legend = document.getElementById('mixLegend');
+      legend.innerHTML = '';
+      categoryMix.forEach((c, i) => {
+        const el = document.createElement('div');
+        el.innerHTML = `<span class="dot" style="background:${gradients[i % gradients.length]}"></span>${c.category} ${(c.mix*100).toFixed(0)}%`;
+        legend.appendChild(el);
+      });
+
+      // Leaderboard
+      const tbody = document.querySelector('#leaderboard tbody');
+      tbody.innerHTML = '';
+      leaderboard.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${row.name}</td><td class="muted">${row.retailer||''}</td><td>${fmtCurrency(row.revenue90d)}</td><td>${row.yoyGrowth==null?'—':fmtPct(row.yoyGrowth)}</td>`;
+        tbody.appendChild(tr);
+      });
+
+      // Risks → compact rail list
+      const risks = document.getElementById('railRisks');
+      risks.innerHTML = '';
+      const riskList = (riskAlerts||[]);
+      document.getElementById('countRisks').textContent = riskList.length;
+      if (riskList.length === 0) {
+        const empty = document.createElement('div'); empty.className='sub'; empty.textContent = 'No significant risks.'; risks.appendChild(empty);
+      }
+      riskList.slice(0,8).forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'rail-item';
+        item.innerHTML = `<div class="head">${r.title}<span class="sub">${r.storeName}</span></div>`;
+        risks.appendChild(item);
+      });
+      // Attach interactivity after render: category legend and leaderboard rows
+      try {
+        const legendEl = document.getElementById('mixLegend');
+        Array.from(legendEl.children).forEach((el, idx) => {
+          el.dataset.category = categoryMix[idx].category;
+          el.style.cursor = 'pointer';
+          el.onclick = () => openCategoryInsight(el);
+        });
+        const tbody2 = document.querySelector('#leaderboard tbody');
+        Array.from(tbody2.querySelectorAll('tr')).forEach((tr, idx) => {
+          tr.dataset.storeId = leaderboard[idx].storeId;
+          tr.style.cursor = 'pointer';
+          tr.onclick = () => openStoreInsight(tr);
+        });
+      } catch {}
+    }
+
+
+    function renderKAMs(data){
+      const { kams } = data;
+      const list = document.getElementById('kamList');
+      const regionFilter = document.getElementById('regionFilter');
+
+      // Populate region filter
+      const regions = Array.from(new Set(kams.map(k => k.territory)));
+      regions.forEach(r => { const opt = document.createElement('option'); opt.value = r; opt.textContent = r; regionFilter.appendChild(opt); });
+
+      function draw(){
+        const region = regionFilter.value;
+        list.innerHTML = '';
+        kams.filter(k => region==='all' || k.territory===region).forEach(k => {
+          const div = document.createElement('div');
+          div.className = 'kam';
+          div.innerHTML = `
+            <div class="name">${k.name}</div>
+            <div class="meta">${k.territory} • ${k.stores.length} stores</div>
+            <div style="display:flex; gap:8px; margin:8px 0;">
+              <span class="pill-sm">Perf ${k.performanceScore}</span>
+              <span class="pill-sm">Meetings ${k.meetingsThisWeek}/wk</span>
+              <span class="pill-sm">Rev ${fmtCurrency(k.revenue90d)}</span>
+            </div>
+            <div class="muted" style="font-size:12px;">Coaching: ${k.coachingNeeds[0] || '—'}</div>
+          `;
+          list.appendChild(div);
+        });
+      }
+      regionFilter.onchange = draw; draw();
+
+      // Right rail: coaching tab
+      const coaching = document.getElementById('railCoaching');
+      coaching.innerHTML = '';
+      const coachingItems = [];
+      kams.forEach(k => {
+        (k.coachingNeeds||[]).slice(0,2).forEach(n => coachingItems.push({ name: k.name, territory: k.territory, need: n }));
+      });
+      document.getElementById('countCoaching').textContent = coachingItems.length;
+      coachingItems.slice(0,10).forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'rail-item';
+        div.innerHTML = `<div class="head">${c.name}<span class="sub">${c.territory}</span></div><div class="sub">${c.need}</div>`;
+        coaching.appendChild(div);
+      });
+    }
+
+    function renderCalls(data){
+      const { calls } = data;
+      // Compact list in rail tab
+      const rail = document.getElementById('railCalls');
+      rail.innerHTML = '';
+      document.getElementById('countCalls').textContent = (calls||[]).length;
+      (calls||[]).slice(0,8).forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'rail-item';
+        const color = c.sentiment==='positive'? 'var(--accent)' : c.sentiment==='neutral' ? 'var(--accent-2)' : 'var(--danger)';
+        div.innerHTML = `<div class="head"><span>${c.camName}</span><span class="sub">${new Date(c.date).toLocaleDateString()}</span></div>
+                         <div class="sub">${c.storeName}</div>
+                         <div class="sub" style="margin-top:4px;">“${c.transcriptSnippet}”</div>
+                         <div class="tags">${c.topics.slice(0,3).map(t=>`<span class=\"tag\">${t}</span>`).join('')}</div>`;
+        div.onclick = () => openCallModal(c.id);
+        rail.appendChild(div);
+      });
+    }
+
+    async function openCallModal(id){
+      try {
+        const res = await fetch(`/nam/calls/${id}`);
+        if (!res.ok) throw new Error('Failed to load call');
+        const call = await res.json();
+        renderCallModal(call);
+        document.getElementById('callOverlay').classList.add('visible');
+      } catch (e) { console.error(e); }
+    }
+
+    function closeCallModal(){
+      document.getElementById('callOverlay').classList.remove('visible');
+    }
+
+    function renderCallModal(call){
+      // Header
+      document.getElementById('callTitle').textContent = `${call.camName} with ${call.managerName}`;
+      document.getElementById('callMeta').textContent = `${call.type} • ${call.storeName} • ${new Date(call.date).toLocaleString()} • ${call.durationMin} min`;
+
+      // Transcript
+      const t = document.getElementById('callTranscript');
+      t.innerHTML = '';
+      (call.transcript||[]).forEach(turn => {
+        const div = document.createElement('div');
+        div.className = 'turn';
+        div.innerHTML = `<span class="speaker">${turn.speaker}</span><span class="muted">[${turn.ts}]</span> ${turn.text}`;
+        t.appendChild(div);
+      });
+
+      // Metrics
+      const m = document.getElementById('callMetrics');
+      m.innerHTML = '';
+      const metrics = [
+        { k: 'Sentiment', v: call.analytics?.sentimentScore != null ? (call.analytics.sentimentScore*100).toFixed(0)+'%' : '—' },
+        { k: 'Questions (CAM)', v: call.analytics?.questions?.cam ?? '—' },
+        { k: 'Questions (Manager)', v: call.analytics?.questions?.manager ?? '—' },
+        { k: 'Interruptions', v: call.analytics ? (call.analytics.interruptions.cam + call.analytics.interruptions.manager) : '—' }
+      ];
+      metrics.forEach(row => { m.innerHTML += `<div>${row.k}</div><div class="metric">${row.v}</div>`; });
+
+      // Talk ratio
+      const cam = Math.round((call.analytics?.talkRatio?.cam ?? 0.5)*100);
+      const mgr = 100 - cam;
+      document.getElementById('talkCam').style.width = cam + '%';
+      document.getElementById('talkCamPct').textContent = cam + '%';
+      document.getElementById('talkMgrPct').textContent = mgr + '%';
+
+      // Sentiment trend as segmented bar
+      const trend = call.analytics?.sentimentTimeline || [];
+      const trendBar = document.getElementById('sentTrend');
+      trendBar.innerHTML = '';
+      trend.forEach(v => {
+        const seg = document.createElement('div');
+        seg.style.width = Math.round(100/trend.length) + '%';
+        seg.style.float = 'left';
+        seg.style.background = v >= 0.5 ? 'var(--accent)' : v >= 0.2 ? 'var(--warn)' : 'var(--danger)';
+        trendBar.appendChild(seg);
+      });
+
+      // Coaching
+      document.getElementById('callCoaching').textContent = call.coachingNotesSuggested || '';
+      const actions = document.getElementById('callActions');
+      actions.innerHTML = '';
+      (call.analytics?.actionItems||[]).forEach(a => {
+        const li = document.createElement('li');
+        li.textContent = `${a.text} • ${a.owner}${a.due?` • due ${new Date(a.due).toLocaleDateString()}`:''}`;
+        actions.appendChild(li);
+      });
+      const fus = document.getElementById('callFollowUps');
+      fus.innerHTML = '';
+      (call.analytics?.followUps||[]).forEach(f => {
+        const li = document.createElement('li');
+        li.textContent = `${f.text} • ${f.when || ''}`;
+        fus.appendChild(li);
+      });
+      const topics = document.getElementById('callTopics');
+      topics.innerHTML = '';
+      (call.analytics?.topicsConfidence||[]).forEach(tc => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = `${tc.topic} ${(tc.confidence*100).toFixed(0)}%`;
+        topics.appendChild(span);
+      });
+    }
+
+    async function boot(){
+      tickClock(); setInterval(tickClock, 10000);
+      document.getElementById('refresh').onclick = init;
+      // Rail tabs switching
+      document.querySelectorAll('.rail-tab').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('.rail-tab').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          const t = btn.dataset.tab;
+          document.querySelectorAll('.rail-view').forEach(v=>v.classList.remove('active'));
+          const el = document.getElementById('rail'+t.charAt(0).toUpperCase()+t.slice(1));
+          if (el) el.classList.add('active');
+        };
+      });
+      await init();
+    }
+    async function init(){
+      try {
+        const [ov, ks, cs] = await Promise.all([loadOverview(), loadKAMs(), loadCalls()]);
+        renderOverview(ov); renderKAMs(ks); renderCalls(cs);
+      } catch (e) { console.error(e); alert('Failed to load NAM dashboard'); }
+    }
+
+    // Insight helpers
+    function positionPopover(target){
+      const pop = document.getElementById('insightPopover');
+      const container = document.querySelector('.tablet-content');
+      const cr = container.getBoundingClientRect();
+      const r = target.getBoundingClientRect();
+      const pw = pop.offsetWidth || 340; const ph = pop.offsetHeight || 200;
+      let x = r.left - cr.left + (r.width/2) - pw/2;
+      x = Math.max(10, Math.min(cr.width - pw - 10, x));
+      let yBelow = r.bottom - cr.top + 10;
+      let yAbove = r.top - cr.top - ph - 10;
+      let y = (yBelow + ph > cr.height) ? Math.max(10, yAbove) : Math.max(10, yBelow);
+      pop.style.left = x + 'px';
+      pop.style.top = y + 'px';
+    }
+
+    let lastInsightQuery = null;
+    async function openMetricInsight(ev){
+      ev.stopPropagation();
+      const card = ev.currentTarget.closest('.insightable');
+      const metric = card?.dataset?.metric;
+      if (!metric) return;
+      const res = await fetch(`/nam/explain?metric=${encodeURIComponent(metric)}`);
+      if (!res.ok) return; const data = await res.json();
+      lastInsightQuery = { metric };
+      renderInsight(data); showInsight(); positionPopover(card);
+    }
+
+    async function openCategoryInsight(catEl){
+      const cat = catEl?.dataset?.category; if (!cat) return;
+      const res = await fetch(`/nam/explain?metric=categoryMix&category=${encodeURIComponent(cat)}`);
+      if (!res.ok) return; const data = await res.json();
+      lastInsightQuery = { metric: 'categoryMix', category: cat };
+      renderInsight(data); showInsight(); positionPopover(catEl);
+    }
+
+    async function openStoreInsight(rowEl){
+      const id = rowEl?.dataset?.storeId; if (!id) return;
+      const res = await fetch(`/nam/explain?metric=store&storeId=${encodeURIComponent(id)}`);
+      if (!res.ok) return; const data = await res.json();
+      lastInsightQuery = { metric: 'store', storeId: id };
+      renderInsight(data); showInsight(); positionPopover(rowEl);
+    }
+
+    function renderInsight(data){
+      document.getElementById('insightTitle').textContent = data.title || 'Insight';
+      document.getElementById('insightSummary').textContent = data.summary || '';
+      const d = document.getElementById('insightDrivers'); d.innerHTML = '';
+      (data.drivers||[]).forEach(t => { const li = document.createElement('li'); li.textContent = t; d.appendChild(li); });
+      const s = document.getElementById('insightSuggestions'); s.innerHTML = '';
+      (data.suggestions||[]).forEach(t => { const li = document.createElement('li'); li.textContent = t; s.appendChild(li); });
+    }
+
+    function showInsight(){ document.getElementById('insightPopover').classList.add('visible'); }
+    function closeInsight(){ document.getElementById('insightPopover').classList.remove('visible'); }
+
+    function askAboutInsight(){
+      if (!lastInsightQuery) return;
+      const q = `Explain ${lastInsightQuery.metric}` + (lastInsightQuery.category?` for ${lastInsightQuery.category}`:'') + (lastInsightQuery.storeId?` at ${lastInsightQuery.storeId}`:'') + ` and recommend next steps.`;
+      const teamsUrl = `https://teams.microsoft.com/l/chat/0/0?users=tribble@nestle.com&topicName=${encodeURIComponent('Ask Tribble')}&message=${encodeURIComponent(q)}`;
+      window.open(teamsUrl, '_blank');
+    }
+
+    // Global close handlers
+    document.addEventListener('click', (e)=>{
+      const pop = document.getElementById('insightPopover');
+      if (!pop.contains(e.target)) closeInsight();
+    });
+
+    boot();
+  </script>
+</body>
+</html>

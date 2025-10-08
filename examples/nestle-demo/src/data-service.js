@@ -77,6 +77,13 @@ export class DataService {
   }
 
   /**
+   * Get National Account Manager supplemental data (KAM roster, recorded calls)
+   */
+  async getNAMData() {
+    return this._loadJSON('nam.json');
+  }
+
+  /**
    * Get all stores
    */
   async getAllStores() {

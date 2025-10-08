@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -168,6 +168,7 @@
         /* Header */
         .header {
             padding: 20px 20px 16px;
+            position: relative;
         }
 
         .header-top {
@@ -207,6 +208,10 @@
             color: var(--text-secondary);
             font-weight: 400;
         }
+
+        /* Co-brand watermark (Nestlé HS) */
+        .brand-watermark { position: absolute; top: 10px; right: 20px; height: 14px; opacity: 0.9; display: none; }
+        [data-brand="nestle"] .brand-watermark { display: block; }
 
         /* Today's Visits */
         .section {
@@ -712,7 +717,14 @@
 
         .tab-icon {
             font-size: 24px;
+            line-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 24px;
         }
+        .tab-icon img.ask-tribble { width: 22px; height: 22px; border-radius: 6px; display: block; }
+        .ask-tribble-16 { width: 16px; height: 16px; vertical-align: middle; margin-right: 6px; border-radius: 4px; }
 
         /* Tab Content Views */
         .tab-content {
@@ -1132,6 +1144,7 @@
                     <div class="profile-pic">SW</div>
                 </div>
                 <div class="subheading">Sarah Williams · North West Territory</div>
+                <img class="brand-watermark" src="/nestle-hs.svg" alt="Nestlé Health Science"/>
                 <div class="date-line">Monday, 30 September</div>
             </div>
 
@@ -1430,7 +1443,7 @@
                     <div>Actions</div>
                 </div>
                 <div class="tab-item" onclick="switchTab('chatTab', this)">
-                    <div class="tab-icon">💬</div>
+                    <div class="tab-icon"><img class="ask-tribble" src="/ask-tribble.png" onerror="this.src='/tribble-logo.svg'" alt="Tribble"></div>
                     <div>Ask Tribble</div>
                 </div>
             </div>
@@ -1611,7 +1624,7 @@
                         <div class="metric-change up">+12% ↑</div>
                         <div class="metric-card-actions">
                             <button class="ask-btn" onclick="askTribble('Why is Immunity up 12% this week?', {store: '${store.name}', metric: 'Immunity', change: '+12%'})">
-                                💬 Ask Why
+                                <img class="ask-tribble-16" src="/ask-tribble.png" onerror="this.src='/tribble-logo.svg'"/>Ask Why
                             </button>
                         </div>
                     </div>
@@ -1621,7 +1634,7 @@
                         <div class="metric-change up">+8% ↑</div>
                         <div class="metric-card-actions">
                             <button class="ask-btn" onclick="askTribble('What is driving Adult Nutrition growth?', {store: '${store.name}', metric: 'Adult Nutrition', change: '+8%'})">
-                                💬 Ask Why
+                                <img class="ask-tribble-16" src="/ask-tribble.png" onerror="this.src='/tribble-logo.svg'"/>Ask Why
                             </button>
                         </div>
                     </div>
@@ -1641,7 +1654,7 @@
                             <div class="action-evidence">${action.rationale}</div>
                             <div class="teams-buttons">
                                 <button class="teams-btn" onclick='askTribble("${action.action.replace(/'/g, "\\'")} - Tell me more about this recommendation", {store: "${store.name}", action: "${action.action.replace(/'/g, "\\'")}"})'>
-                                    💬 Ask Tribble
+                                    <img class="ask-tribble-16" src="/ask-tribble.png" onerror="this.src='/tribble-logo.svg'"/>Ask Tribble
                                 </button>
                                 <button class="teams-btn secondary" onclick='shareToTeams("${action.action.replace(/'/g, "\\'")}","${action.expectedImpact.replace(/'/g, "\\'")} \\n\\nProof: ${action.rationale.replace(/'/g, "\\'")}", {store: "${store.name}"})'>
                                     📤 Share
@@ -1663,7 +1676,7 @@
                                 <div class="action-evidence">${alert.description}</div>
                                 <div class="teams-buttons">
                                     <button class="teams-btn" onclick='askTribble("Why is ${alert.type.replace(/'/g, "\\'")} happening at ${store.name}?", {store: "${store.name}", alert: "${alert.type.replace(/'/g, "\\'")}", severity: "high"})'>
-                                        💬 Ask Why
+                                        <img class="ask-tribble-16" src="/ask-tribble.png" onerror="this.src='/tribble-logo.svg'"/>Ask Why
                                     </button>
                                     <button class="teams-btn secondary" onclick='shareToTeams("⚠️ ${alert.type.replace(/'/g, "\\'")}", "${alert.description.replace(/'/g, "\\'")}", {store: "${store.name}"})'>
                                         📤 Escalate

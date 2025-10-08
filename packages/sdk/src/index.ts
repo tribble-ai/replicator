@@ -20,10 +20,23 @@ export function createTribble(config: TribbleConfig) {
     ? new WorkflowsClient({ ...config.workflows, defaultHeaders: { ...(config.workflows.defaultHeaders || {}), [propagate]: createRequestId() } })
     : undefined;
 
+  // optional primitives (ingest/control powered). Only attach if require/import available.
+  let primitives: any;
+  try {
+    // Safe in CJS; in ESM, typeof require === 'undefined'
+    // @ts-ignore
+    if (typeof require !== 'undefined') {
+      // @ts-ignore
+      const { PrimitivesClient } = require('@tribble/sdk-primitives');
+      primitives = new PrimitivesClient({ ...config, ingest: config.ingest } as TribbleConfig);
+    }
+  } catch {}
+
   return {
     agent,
     ingest: ingest!,
     workflows: workflows!,
+    primitives,
     config,
   } as const;
 }
@@ -35,4 +48,3 @@ export { AgentClient } from '@tribble/sdk-agent';
 export { IngestClient } from '@tribble/sdk-ingest';
 export { WorkflowsClient } from '@tribble/sdk-workflows';
 export * as actions from '@tribble/sdk-actions';
-

@@ -10,6 +10,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
+    "./primitives": {
+      "types": "./dist/primitives.d.ts",
+      "import": "./dist/primitives.mjs",
+      "require": "./dist/primitives.cjs"
+    },
     "./agent": {
       "types": "./dist/agent.d.ts",
       "import": "./dist/agent.mjs",
@@ -71,13 +76,14 @@
   "types": "./dist/index.d.ts",
   "files": ["dist"],
   "scripts": {
-    "build": "tsup src/index.ts src/agent.ts src/chat.ts src/ingest.ts src/docs.ts src/workflows.ts src/events.ts src/actions.ts src/connectors.ts src/auth.ts src/queue.ts src/render.ts --format esm,cjs --dts --sourcemap --clean"
+    "build": "tsup src/index.ts src/agent.ts src/chat.ts src/ingest.ts src/docs.ts src/workflows.ts src/events.ts src/actions.ts src/connectors.ts src/auth.ts src/queue.ts src/render.ts src/primitives.ts --format esm,cjs --dts --sourcemap --clean"
   },
   "dependencies": {
     "@tribble/sdk-core": "*",
     "@tribble/sdk-agent": "*",
     "@tribble/sdk-chat": "*",
     "@tribble/sdk-ingest": "*",
+    "@tribble/sdk-primitives": "*",
     "@tribble/sdk-docs": "*",
     "@tribble/sdk-workflows": "*",
     "@tribble/sdk-events": "*",

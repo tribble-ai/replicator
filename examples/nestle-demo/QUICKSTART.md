@@ -18,11 +18,18 @@ npm install
 # 3. Generate mock data (creates 5 UK stores with full intelligence)
 npm run generate-mock-data
 
-# 4. Start the Tribble Platform demo server
+# 4. Start the Tribble Platform demo server (serves mobile + NAM views)
 npm run demo
 ```
 
 Server starts on `http://localhost:3000`
+
+Open views:
+
+```text
+CAM (store-level):   http://localhost:3000/mobile.html
+NAM (territory iPad): http://localhost:3000/mobile-nam.html
+```
 
 **What this simulates:** Tribble Platform autonomously querying Exceedra, SAP, Power BI, and SharePoint to generate intelligence.
 

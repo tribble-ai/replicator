@@ -1,0 +1,179 @@
+{
+  "kams": [
+    {
+      "name": "Sarah Williams",
+      "email": "sarah.williams@nestle.com",
+      "territory": "North West",
+      "stores": ["UK12345", "UK12346", "UK12347"],
+      "performanceScore": 86,
+      "meetingsThisWeek": 6,
+      "lastActive": "2025-10-03T09:15:00Z",
+      "coachingNeeds": [
+        "Reduce OOS incidents on Adult Nutrition in Tesco",
+        "Strengthen value messaging vs Boots own label"
+      ]
+    },
+    {
+      "name": "James Patel",
+      "email": "james.patel@nestle.com",
+      "territory": "West Midlands",
+      "stores": ["UK12348"],
+      "performanceScore": 78,
+      "meetingsThisWeek": 4,
+      "lastActive": "2025-10-03T08:42:00Z",
+      "coachingNeeds": [
+        "Improve campaign execution speed",
+        "Follow-through on shelf repositioning commitments"
+      ]
+    },
+    {
+      "name": "Laura Chen",
+      "email": "laura.chen@nestle.com",
+      "territory": "Yorkshire",
+      "stores": ["UK12349"],
+      "performanceScore": 91,
+      "meetingsThisWeek": 5,
+      "lastActive": "2025-10-03T10:02:00Z",
+      "coachingNeeds": [
+        "Expand Vitamins educational materials in Leeds",
+        "Leverage Immunity+ lifestyle imagery more consistently"
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "id": "CALL-UK12345-2025-09-09",
+      "date": "2025-09-09T10:15:00Z",
+      "type": "in-person",
+      "storeId": "UK12345",
+      "storeName": "Tesco Extra Manchester Arndale",
+      "camName": "Sarah Williams",
+      "managerName": "David Thompson",
+      "durationMin": 72,
+      "sentiment": "positive",
+      "topics": ["Display execution", "Facings", "Winter campaign"],
+      "transcriptSnippet": "Great, we can commit to two extra facings on Immunity+ next week. The POS looked strong last time.",
+      "aiHighlights": [
+        "Manager agreed to 2x additional facings",
+        "Campaign materials well received",
+        "Follow-up to verify execution in next visit"
+      ],
+      "coachingNotesSuggested": "Prepare visual proof of lift from similar store to reinforce execution urgency.",
+      "analytics": {
+        "talkRatio": { "cam": 0.56, "manager": 0.44 },
+        "sentimentScore": 0.76,
+        "sentimentTimeline": [0.2, 0.4, 0.7, 0.85, 0.8],
+        "questions": { "cam": 4, "manager": 2 },
+        "interruptions": { "cam": 1, "manager": 0 },
+        "fillerWords": { "cam": 8, "manager": 6 },
+        "actionItems": [
+          { "text": "Verify display execution (2x facings)", "owner": "CAM", "due": "2025-09-16" },
+          { "text": "Share similar-store proof pack slides", "owner": "CAM", "due": "2025-09-11" }
+        ],
+        "followUps": [
+          { "text": "Check sales lift post-facings change", "when": "Next visit" }
+        ],
+        "keyMoments": [
+          { "ts": "00:05", "note": "Agreement on 2x facings" },
+          { "ts": "00:52", "note": "Interest in winter campaign" }
+        ],
+        "topicsConfidence": [
+          { "topic": "Display execution", "confidence": 0.93 },
+          { "topic": "Facings", "confidence": 0.88 },
+          { "topic": "Winter campaign", "confidence": 0.81 }
+        ]
+      },
+      "transcript": [
+        { "speaker": "CAM", "ts": "00:00", "text": "Thanks David—I'd like to review Immunity+ placement and propose adding two facings." },
+        { "speaker": "Manager", "ts": "00:12", "text": "If the POS looks clean and we don't lose vitamins space, I'm open to it." },
+        { "speaker": "CAM", "ts": "00:27", "text": "Great, we brought the new winter POS—clean layout and educational callouts." },
+        { "speaker": "Manager", "ts": "00:41", "text": "Let's do two extra facings next week. Can you send me a one-pager?" },
+        { "speaker": "CAM", "ts": "00:52", "text": "Absolutely—I'll send a proof pack and check lift a week after execution." }
+      ]
+    },
+    {
+      "id": "CALL-UK12346-2025-08-21",
+      "date": "2025-08-21T15:00:00Z",
+      "type": "phone",
+      "storeId": "UK12346",
+      "storeName": "Boots Liverpool One",
+      "camName": "Sarah Williams",
+      "managerName": "Sarah Mitchell",
+      "durationMin": 28,
+      "sentiment": "neutral",
+      "topics": ["OOS incidents", "Emergency stock order"],
+      "transcriptSnippet": "We had Boost Plus Vanilla OOS for three days—I've placed an emergency order and flagged DC availability.",
+      "aiHighlights": [
+        "OOS resolved with emergency order",
+        "Risk of recurrence without safety stock",
+        "Opportunity to align promo timing with stock"
+      ],
+      "coachingNotesSuggested": "Coach on proactive safety-stock thresholds and early DC signal checks.",
+      "analytics": {
+        "talkRatio": { "cam": 0.62, "manager": 0.38 },
+        "sentimentScore": 0.48,
+        "sentimentTimeline": [0.1, 0.0, 0.2, 0.5, 0.6],
+        "questions": { "cam": 3, "manager": 1 },
+        "interruptions": { "cam": 0, "manager": 1 },
+        "fillerWords": { "cam": 5, "manager": 4 },
+        "actionItems": [
+          { "text": "Set safety-stock threshold for Boost Plus Vanilla", "owner": "CAM", "due": "2025-08-28" },
+          { "text": "Align promo schedule with DC availability", "owner": "NAM", "due": "2025-09-05" }
+        ],
+        "followUps": [ { "text": "Confirm safety-stock applied", "when": "1 week" } ],
+        "keyMoments": [ { "ts": "00:18", "note": "OOS root cause discussed" } ],
+        "topicsConfidence": [
+          { "topic": "OOS incidents", "confidence": 0.91 },
+          { "topic": "Stock policy", "confidence": 0.74 }
+        ]
+      },
+      "transcript": [
+        { "speaker": "CAM", "ts": "00:00", "text": "Wanted to flag Boost Plus Vanilla—three days OOS last week." },
+        { "speaker": "Manager", "ts": "00:09", "text": "We had a delivery hiccup; what do you recommend?" },
+        { "speaker": "CAM", "ts": "00:16", "text": "Emergency order already placed; propose a safety-stock floor and promo alignment with DC." },
+        { "speaker": "Manager", "ts": "00:23", "text": "Makes sense—send me the thresholds and I'll add to SOP." }
+      ]
+    },
+    {
+      "id": "CALL-UK12349-2025-09-27",
+      "date": "2025-09-27T11:30:00Z",
+      "type": "in-person",
+      "storeId": "UK12349",
+      "storeName": "Boots Leeds Trinity",
+      "camName": "Laura Chen",
+      "managerName": "Emma Richardson",
+      "durationMin": 54,
+      "sentiment": "positive",
+      "topics": ["Education materials", "Vitamin D3", "Conversion"],
+      "transcriptSnippet": "The leaflet stand near the checkout increased Vitamin D3 questions—staff training helped convert.",
+      "aiHighlights": [
+        "Educational materials improved conversion",
+        "Staff training cited by manager as key",
+        "Consider scaling to similar stores"
+      ],
+      "coachingNotesSuggested": "Encourage peer share of training outline and customer Q&A script.",
+      "analytics": {
+        "talkRatio": { "cam": 0.49, "manager": 0.51 },
+        "sentimentScore": 0.82,
+        "sentimentTimeline": [0.5, 0.7, 0.85, 0.9],
+        "questions": { "cam": 2, "manager": 4 },
+        "interruptions": { "cam": 0, "manager": 0 },
+        "fillerWords": { "cam": 3, "manager": 2 },
+        "actionItems": [
+          { "text": "Share training outline and Q&A script", "owner": "CAM", "due": "2025-10-01" }
+        ],
+        "followUps": [ { "text": "Measure conversion change post-training", "when": "2 weeks" } ],
+        "keyMoments": [ { "ts": "00:31", "note": "Training impact acknowledged" } ],
+        "topicsConfidence": [
+          { "topic": "Education materials", "confidence": 0.9 },
+          { "topic": "Vitamin D3", "confidence": 0.86 }
+        ]
+      },
+      "transcript": [
+        { "speaker": "CAM", "ts": "00:00", "text": "How did the leaflet stand perform near checkout?" },
+        { "speaker": "Manager", "ts": "00:05", "text": "Questions increased, and staff training helped close sales on D3." },
+        { "speaker": "CAM", "ts": "00:14", "text": "Great—I'll share the training outline and a quick Q&A script." }
+      ]
+    }
+  ]
+}
