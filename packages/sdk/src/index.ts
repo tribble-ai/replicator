@@ -4,6 +4,41 @@ import { AgentClient } from '@tribble/sdk-agent';
 import { IngestClient } from '@tribble/sdk-ingest';
 import { WorkflowsClient } from '@tribble/sdk-workflows';
 
+/**
+ * Create a configured Tribble SDK instance
+ *
+ * @example
+ * ```typescript
+ * const tribble = createTribble({
+ *   agent: {
+ *     baseUrl: 'https://api.tribble.com',
+ *     token: 'your-token',
+ *     email: 'user@example.com'
+ *   },
+ *   ingest: {
+ *     baseUrl: 'https://ingest.tribble.com',
+ *     tokenProvider: async () => 'your-token'
+ *   },
+ *   workflows: {
+ *     endpoint: 'https://workflows.tribble.com/invoke',
+ *     signingSecret: 'your-secret'
+ *   }
+ * });
+ *
+ * // Chat with an agent
+ * const response = await tribble.agent.chat('Hello!');
+ *
+ * // Upload a document
+ * await tribble.ingest.uploadDocument({
+ *   file: pdfBuffer,
+ *   filename: 'document.pdf',
+ *   metadata: { title: 'My Document' }
+ * });
+ *
+ * // Trigger a workflow
+ * await tribble.workflows.trigger({ event: 'user_created', data: { userId: '123' } });
+ * ```
+ */
 export function createTribble(config: TribbleConfig) {
   const propagate = config.telemetry?.propagateTraceHeader || 'X-Tribble-Request-Id';
 
@@ -20,31 +55,20 @@ export function createTribble(config: TribbleConfig) {
     ? new WorkflowsClient({ ...config.workflows, defaultHeaders: { ...(config.workflows.defaultHeaders || {}), [propagate]: createRequestId() } })
     : undefined;
 
-  // optional primitives (ingest/control powered). Only attach if require/import available.
-  let primitives: any;
-  try {
-    // Safe in CJS; in ESM, typeof require === 'undefined'
-    // @ts-ignore
-    if (typeof require !== 'undefined') {
-      // @ts-ignore
-      const { PrimitivesClient } = require('@tribble/sdk-primitives');
-      primitives = new PrimitivesClient({ ...config, ingest: config.ingest } as TribbleConfig);
-    }
-  } catch {}
-
   return {
     agent,
     ingest: ingest!,
     workflows: workflows!,
-    primitives,
     config,
   } as const;
 }
 
 export type { TribbleConfig };
 
-// Re-exports for convenience
+// Re-exports for direct access
 export { AgentClient } from '@tribble/sdk-agent';
 export { IngestClient } from '@tribble/sdk-ingest';
 export { WorkflowsClient } from '@tribble/sdk-workflows';
-export * as actions from '@tribble/sdk-actions';
+export { TribbleAuth, InMemoryStorage, FileStorage } from '@tribble/sdk-auth';
+export { UploadQueue } from '@tribble/sdk-queue';
+export { verifySignature, createWebhookApp } from '@tribble/sdk-events';

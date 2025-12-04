@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "demo": "node src/demo-without-tribble.js",
     "dev": "node --watch src/demo-without-tribble.js",
+    "demo:server": "node demo-server.js",
     "generate-mock-data": "node src/mock-data-generator.js",
     "test": "node src/test-demo.js"
   },

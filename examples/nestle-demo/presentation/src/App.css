@@ -1,4 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+:root {
+  --safe-top: 80px;
+  --safe-bottom: 140px; /* room for top counter + nav */
+  /* Tribble brand + light theme tokens */
+  --brand-primary: #3263E9;
+  --brand-ink: #0b1220;
+  --surface: #ffffff;
+  --surface-muted: #f8fafc;
+  --border: #e2e8f0; /* slate-200 */
+  --text-primary: var(--brand-ink);
+  --text-secondary: rgba(11, 18, 32, 0.8);
+  --text-muted: rgba(11, 18, 32, 0.6);
+}
+
+/* Brand overrides (Nestlé) via data-brand on <html> */
+:root[data-brand="nestle"] {
+  /* Update when final brand palette confirmed */
+  --brand-primary: #165C96; /* placeholder from brand book */
+  --brand-ink: #0b1220;
+}
 
 * {
   margin: 0;
@@ -8,8 +27,8 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  background: #0b1220;
-  color: #ffffff;
+  background: var(--surface);
+  color: var(--text-primary);
   overflow: hidden;
 }
 
@@ -26,17 +45,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px;
+  padding: 20px;
   overflow: hidden;
+}
+
+/* 16:9 slide frame that scales to fit viewport minus nav/counter */
+.slide-stage {
+  width: min(96vw, calc((100vh - var(--safe-top) - var(--safe-bottom)) * 16 / 9));
+  aspect-ratio: 16 / 9;
+  height: auto; /* driven by aspect-ratio */
+  display: block;
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 32px rgba(11, 18, 32, 0.07);
+  overflow: hidden; /* ensure content stays within frame */
+  background: transparent; /* keep theme */
 }
 
 .slide {
   width: 100%;
-  max-width: 1400px;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative; /* allow positioned adornments */
+  padding: 40px; /* inner slide padding inside the frame */
   animation: slideIn 0.5s ease-out;
 }
 
@@ -51,6 +85,12 @@ body {
   }
 }
 
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .slide { animation: none !important; }
+  .nav-btn, .indicator { transition: none !important; }
+}
+
 /* Navigation Controls */
 .nav-controls {
   position: fixed;
@@ -60,17 +100,60 @@ body {
   display: flex;
   align-items: center;
   gap: 24px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
   border-radius: 50px;
   padding: 12px 24px;
 }
 
+
+/* Glass chips and subtle attention styles */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--brand-primary);
+  color: #fff;
+  border: 1px solid var(--brand-primary);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(50,99,233,0.25);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--brand-primary);
+  border: 1px solid var(--brand-primary);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+}
+
+/* (intentionally left simple for light mode) */
+
 .nav-btn {
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -80,8 +163,8 @@ body {
 }
 
 .nav-btn:hover:not(:disabled) {
-  background: rgba(50, 99, 233, 0.2);
-  color: #3263E9;
+  background: rgba(50, 99, 233, 0.12);
+  color: var(--brand-primary);
 }
 
 .nav-btn:disabled {
@@ -98,7 +181,7 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(11, 18, 32, 0.2);
   border: none;
   cursor: pointer;
   transition: all 0.3s;
@@ -106,7 +189,7 @@ body {
 }
 
 .indicator.active {
-  background: #3263E9;
+  background: var(--brand-primary);
   transform: scale(1.3);
 }
 
@@ -119,41 +202,52 @@ body {
   top: 30px;
   right: 40px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 18, 32, 0.45);
   font-weight: 600;
+}
+
+/* Print layout */
+.print-grid { display: none; }
+.print-slide { padding: 0; }
+
+@media print {
+  body, .presentation { background: #ffffff !important; }
+  .nav-controls, .slide-counter { display: none !important; }
+  .slide-container { padding: 0 !important; }
+  .slide-stage { width: 100% !important; aspect-ratio: auto !important; height: auto !important; border: none !important; box-shadow: none !important; }
+  .slide { padding: 32px !important; }
+  .print-grid { display: block !important; }
+  .print-slide { break-after: page; page-break-after: always; }
 }
 
 /* Slide Typography */
 .slide h1 {
-  font-size: 72px;
+  font-size: clamp(40px, 8vw, 72px);
   font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  color: var(--text-primary);
 }
 
 .slide h2 {
-  font-size: 48px;
+  font-size: clamp(28px, 5vw, 48px);
   font-weight: 800;
   line-height: 1.2;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .slide h3 {
-  font-size: 32px;
+  font-size: clamp(20px, 3vw, 28px);
   font-weight: 700;
-  margin-bottom: 16px;
-  color: #3263E9;
+  margin-bottom: 12px;
+  color: var(--brand-primary);
 }
 
 .slide p {
-  font-size: 20px;
+  font-size: clamp(16px, 2vw, 20px);
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
 }
 
 .slide ul {
@@ -164,7 +258,7 @@ body {
 .slide li {
   font-size: 18px;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(11, 18, 32, 0.9);
   margin-bottom: 12px;
   padding-left: 32px;
   position: relative;
@@ -174,7 +268,7 @@ body {
   content: "→";
   position: absolute;
   left: 0;
-  color: #3263E9;
+  color: var(--brand-primary);
   font-weight: 700;
 }
 
@@ -186,18 +280,22 @@ body {
   margin-top: 40px;
 }
 
+.card-grid.two-col {
+  grid-template-columns: 1fr 1fr;
+}
+
 .card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 32px;
+  padding: 28px;
   transition: all 0.3s;
 }
 
 .card:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(50, 99, 233, 0.06);
   border-color: rgba(50, 99, 233, 0.3);
-  transform: translateY(-4px);
+  transform: translateY(-2px);
 }
 
 .card-icon {
@@ -209,13 +307,13 @@ body {
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 12px;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .card-desc {
   font-size: 16px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(11, 18, 32, 0.75);
 }
 
 /* Badge */
@@ -223,19 +321,20 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(50, 99, 233, 0.15);
-  border: 1px solid rgba(50, 99, 233, 0.3);
+  background: rgba(255,255,255,0.75);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
   border-radius: 50px;
   padding: 8px 20px;
   font-size: 14px;
   font-weight: 600;
-  color: #3263E9;
+  color: var(--brand-primary);
   margin-bottom: 24px;
 }
 
 /* Highlight */
 .highlight {
-  color: #3263E9;
+  color: var(--brand-primary);
   font-weight: 700;
 }
 
@@ -248,8 +347,8 @@ body {
 }
 
 .pillar {
-  background: linear-gradient(135deg, rgba(50, 99, 233, 0.1) 0%, rgba(50, 99, 233, 0.02) 100%);
-  border: 2px solid rgba(50, 99, 233, 0.2);
+  background: linear-gradient(135deg, rgba(50, 99, 233, 0.08) 0%, rgba(50, 99, 233, 0.02) 100%);
+  border: 1px solid rgba(50, 99, 233, 0.2);
   border-radius: 24px;
   padding: 40px;
   text-align: center;
@@ -257,7 +356,7 @@ body {
 }
 
 .pillar:hover {
-  border-color: #3263E9;
+  border-color: var(--brand-primary);
   transform: scale(1.05);
   box-shadow: 0 20px 60px rgba(50, 99, 233, 0.3);
 }
@@ -265,22 +364,22 @@ body {
 .pillar-number {
   font-size: 64px;
   font-weight: 900;
-  color: #3263E9;
+  color: var(--brand-primary);
   margin-bottom: 16px;
   opacity: 0.3;
 }
 
 .pillar-title {
-  font-size: 28px;
+  font-size: clamp(18px, 2.6vw, 24px);
   font-weight: 800;
   margin-bottom: 16px;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .pillar-desc {
-  font-size: 16px;
+  font-size: clamp(14px, 1.8vw, 16px);
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(11, 18, 32, 0.7);
 }
 
 /* Stats */
@@ -294,21 +393,21 @@ body {
 .stat {
   text-align: center;
   padding: 24px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-muted);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
 }
 
 .stat-value {
-  font-size: 48px;
+  font-size: clamp(28px, 4.2vw, 44px);
   font-weight: 900;
-  color: #3263E9;
+  color: var(--brand-primary);
   margin-bottom: 8px;
 }
 
 .stat-label {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -327,31 +426,42 @@ body {
   flex: 1;
   text-align: center;
   padding: 40px 20px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-muted);
   border-radius: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
   position: relative;
 }
 
 .arch-layer.highlight-layer {
-  background: rgba(50, 99, 233, 0.15);
-  border-color: #3263E9;
+  background: rgba(50, 99, 233, 0.1);
+  border-color: rgba(50, 99, 233, 0.3);
 }
 
 .arch-arrow {
   font-size: 32px;
-  color: #3263E9;
+  color: var(--brand-primary);
 }
 
 .arch-title {
-  font-size: 20px;
+  font-size: clamp(16px, 2vw, 20px);
   font-weight: 700;
   margin-bottom: 12px;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .arch-items {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: clamp(12px, 1.6vw, 14px);
+  color: rgba(11, 18, 32, 0.75);
   line-height: 1.8;
 }
+
+/* Compact variant for dense slides */
+.slide.compact h2 { margin-bottom: 20px; }
+.slide.compact .card { padding: 22px; }
+.slide.compact .card-title { font-size: clamp(16px, 1.8vw, 20px); }
+.slide.compact .card-desc { font-size: clamp(13px, 1.6vw, 15px); }
+.slide.compact p { margin-bottom: 8px; }
+.slide.compact ul { margin-top: 6px; }
+.slide.compact li { font-size: clamp(14px, 1.8vw, 16px); margin-bottom: 8px; }
+
+/* Title/callout accents intentionally minimal for light mode */

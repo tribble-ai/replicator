@@ -1,88 +1,348 @@
-Tribble SDK (Monorepo)
+# Tribble SDK
 
-This repo contains a runtime‑agnostic, TypeScript‑first SDK for Tribble. It implements our Managed Extensibility + CUDA‑like primitives vision and supports managed, private, and ecosystem deployments.
+Build GenAI applications on the Tribble Platform with document ingestion, agent chat, and workflow automation.
 
-Highlights
-- ESM‑first, dual export (CJS/ESM), treeshakeable
-- Runtime‑agnostic (Node/Bun/Deno/Edge) with global fetch
-- Secure defaults (timeouts, abort, HMAC signing for webhooks)
-- Observability hooks and correlation IDs supported
-- Managed Extensibility (extensions, policies, tests, channels)
-- CUDA‑like primitives (unified ingestion + orchestration)
+## Installation
 
-Packages
-- @tribble/sdk-core – HTTP client, retries, idempotency, errors
-- @tribble/sdk-agent – Chat (sync + SSE), helpers
-- @tribble/sdk-ingest – /api/upload wrapper (PDF + metadata)
-- @tribble/sdk-workflows – Trigger signed webhook workflows
-- @tribble/sdk-events – Webhook signature verify + lightweight router
-- @tribble/sdk-actions – Action composition DSL
-- @tribble/sdk-connectors – Plugin API surface for external connectors
-- @tribble/sdk-extensions – Extension manifest types + validator (Managed Extensibility MVP)
-- @tribble/sdk-capabilities – Versioned capability registry seed (contracts)
-- @tribble/sdk-policy – Policy types and validator (PII, scope, cost)
-- @tribble/sdk-primitives – CUDA-like atomic operations (upload, etc.)
-- @tribble/sdk-test – Contract-test runner for manifests
-- @tribble/sdk – Umbrella package that re‑exports and wires createTribble
-- @tribble/sdk-cli – Placeholder CLI (to be expanded)
+```bash
+npm install @tribble/sdk
+```
 
-Notes
-- This SDK directory is self‑contained and has no dependencies on Tribble’s internal monorepo code.
-- Endpoints are configurable per customer environment; defaults are sensible but overrideable.
+## Quick Start
 
-Start Here
-- Docs index: docs/README.md
-- Getting Started: docs/GETTING_STARTED.md
+```typescript
+import { createTribble } from '@tribble/sdk';
 
-Quickstarts
-- **Field Sales Orchestrator** – `cd SDK/examples/cpg-field-sales && npm i && npm start`
-  - Multi-phase job: parallel ingest/reference, retailer research prompts, live SSE stream, Markdown call-plan artifact, optional workflow trigger.
-  - Env: `TRIBBLE_AGENT_BASE_URL`, `TRIBBLE_AGENT_TOKEN`, `TRIBBLE_AGENT_EMAIL`, `TRIBBLE_BASE_URL`, `TRIBBLE_INGEST_TOKEN`, optional `TRIBBLE_WORKFLOW_ENDPOINT`, `TRIBBLE_WORKFLOW_SECRET`, `PREP_TIMEOUT_MS`.
-- **Real-time Sales Coach** – `cd SDK/examples/realtime-sales-coach && npm i && npm start -- --prompt "your prompt"`
-  - Interactive or one‑shot streaming with timeout/abort, transcript saving, and JSON output.
-  - Env: `TRIBBLE_AGENT_BASE_URL`, `TRIBBLE_AGENT_TOKEN`, `TRIBBLE_AGENT_EMAIL`, optional `COACH_TIMEOUT_MS`.
-- **Enablement Agent** – `cd SDK/examples/enablement-agent && npm i && npm start -- --file ./onboarding-pack.pdf`
-  - Ingests files or a folder, streams generation, writes JSON + Markdown artifacts, optional workflow trigger.
-  - Env: `TRIBBLE_AGENT_BASE_URL`, `TRIBBLE_AGENT_TOKEN`, `TRIBBLE_AGENT_EMAIL`, `TRIBBLE_BASE_URL`, `TRIBBLE_INGEST_TOKEN`, optional `TRIBBLE_WORKFLOW_ENDPOINT`, `TRIBBLE_WORKFLOW_SECRET`.
+const tribble = createTribble({
+  agent: {
+    baseUrl: 'https://api.tribble.com',
+    token: 'your-token',
+    email: 'user@example.com'
+  },
+  ingest: {
+    baseUrl: 'https://ingest.tribble.com',
+    tokenProvider: async () => 'your-token'
+  },
+  workflows: {
+    endpoint: 'https://workflows.tribble.com/invoke',
+    signingSecret: 'your-secret'
+  }
+});
 
-Runner
-- Run extensions locally/private:
-  - `tribble runner run --manifest examples/extensions/lead-dedupe-and-route/extension.yaml --event examples/extensions/lead-dedupe-and-route/fixtures/enterprise_lead.json --control-base-url <url> --control-token <token>`
-- See docs: docs/RUNNER.md
+// Chat with an AI agent
+const response = await tribble.agent.chat('Hello!');
 
-Deploy Options
-- See docs: docs/DEPLOY.md (managed runtime, private runner, ecosystem runtimes)
+// Upload a document
+await tribble.ingest.uploadDocument({
+  file: pdfBuffer,
+  filename: 'document.pdf',
+  metadata: { title: 'My Document' }
+});
 
-Extensions (Managed Extensibility)
-- Author and validate extension manifests (`extension.yaml`) that declare intents, capabilities, policies, and tests.
-- CLI:
-  - `tribble ext init [dir]` – scaffold an example manifest
-  - `tribble ext validate --manifest <path>` – validate schema and semantics
-  - `tribble ext plan --manifest <path>` – print a normalized execution plan
-  - `tribble ext test --manifest <path>` – run contract tests from manifest
-  - `tribble ext publish --manifest <path> --channel <lts|regular|canary>` – publish locally with channel metadata
-  - `tribble ext promote --name <n> --version <v> --from <c> --to <c>` – update channel pointer
-  - `tribble ext freeze --name <n> --channel <c>` – mark channel frozen
-  - `tribble ext migrate --manifest <path> --rename old=new [--write]` – codemod convenience
-- See docs: docs/EXTENSIONS.md
+// Trigger a workflow
+await tribble.workflows.trigger({
+  slug: 'process-lead',
+  input: { userId: '123' }
+});
+```
 
-Primitives (CUDA‑like)
-- See docs: docs/PRIMITIVES.md
-- CLI: `tribble upload ...` convenience wrapper
+## Packages
 
-Capabilities
-- See docs: docs/CAPABILITIES.md
+| Package | Description |
+|---------|-------------|
+| `@tribble/sdk` | Main SDK - use this for most applications |
+| `@tribble/sdk-core` | HTTP client, errors, utilities |
+| `@tribble/sdk-agent` | AI agent chat and streaming |
+| `@tribble/sdk-ingest` | Document ingestion (PDF, HTML, CSV, JSON, spreadsheets) |
+| `@tribble/sdk-workflows` | Workflow triggers with HMAC signing |
+| `@tribble/sdk-events` | Webhook signature verification |
+| `@tribble/sdk-auth` | OAuth2 PKCE authentication |
+| `@tribble/sdk-queue` | Job queue with retries |
+| `@tribble/sdk-cli` | Command-line interface |
 
-Compatibility & API Alignment
-- **Chat**: POST `https://tribble-chat.<env>.tribble.ai/api/external/chat` with `{ email, message, conversation_id?, streaming }` and text/event-stream responses.
-- **Ingest**: POST `/api/upload` with multipart `files` + `metadata_{index}`. Headers: `Authorization: Bearer <token>`, optional `X-Tribble-Request-Id`, `X-Idempotency-Key` (SDK sends both).
-- **Workflow Trigger**: Any HTTPS endpoint; SDK signs with `X-Tribble-Signature: t=<unix>, v1=<hmac>` using the shared secret.
-- **Metadata Support**: Upload metadata keys handled today – `uuid`, `privacy`, `typeId`, `typeIsRfp`, `typeIsStructured`, `typeIsInsight`, `uploadDate`, `useForGeneration`, `label`, `source_url`, `externalDocSource`, `always_tag_metadata`, `auto_tag_metadata`, `never_auto_tag_metadata`.
-- **Known gaps** (handled by SDK fallbacks): ingest responses may omit `document_ids`; chat SSE emits only `data:` blocks without explicit `event` names.
+## Features
 
-Release Checklist (v0.1+)
-- Verify `npm run build` succeeds at repo root (`SDK` directory).
-- Bump versions where needed (packages/*/package.json, package-lock.json) and update tags.
-- Update this README with compatibility notes if server/API contracts change; communicate breaking changes via CHANGELOG (todo).
-- Publish packages (e.g. `npm publish --access public` per workspace or via `npm run publish` script when added).
-- Smoke test quickstarts against staging/prod environments with env vars only – focus on SSE stream and ingest idempotency.
+### Agent Chat
+
+```typescript
+import { AgentClient } from '@tribble/sdk';
+
+const agent = new AgentClient({
+  baseUrl: 'https://api.tribble.com',
+  token: 'your-token',
+  email: 'user@example.com'
+});
+
+// Simple chat
+const response = await agent.chat('What are today\'s top priorities?');
+console.log(response);
+
+// Streaming response
+for await (const chunk of agent.stream('Summarize the quarterly report')) {
+  process.stdout.write(chunk);
+}
+
+// Parse JSON from response
+const data = await agent.parseJSON('List the top 3 customers as JSON');
+```
+
+### Document Ingestion
+
+```typescript
+import { IngestClient } from '@tribble/sdk';
+
+const ingest = new IngestClient({
+  baseUrl: 'https://ingest.tribble.com',
+  tokenProvider: async () => 'your-token'
+});
+
+// Upload PDF
+await ingest.uploadPDF({
+  file: pdfBuffer,
+  filename: 'report.pdf',
+  metadata: { category: 'reports', year: 2024 }
+});
+
+// Upload CSV with schema validation
+await ingest.uploadStructuredData({
+  data: csvString,
+  format: 'csv',
+  metadata: {
+    schema: [
+      { name: 'email', type: 'string', required: true },
+      { name: 'revenue', type: 'number', required: true }
+    ],
+    validateSchema: true
+  }
+});
+
+// Upload HTML
+await ingest.uploadHTML({
+  content: '<html><body>Hello</body></html>',
+  metadata: { source: 'https://example.com' }
+});
+
+// Upload spreadsheet
+await ingest.uploadSpreadsheet({
+  file: xlsxBuffer,
+  filename: 'data.xlsx',
+  sheetName: 'Q4 Sales'
+});
+
+// Upload with auto-detection
+await ingest.uploadDocument({
+  file: fileBuffer,
+  filename: 'document.pdf'  // type detected from extension
+});
+
+// Upload transactional data
+await ingest.uploadTransactionalData({
+  data: { orderId: '123', amount: 99.99, status: 'completed' },
+  entityType: 'order',
+  metadata: { transactionId: 'TXN-456' }
+});
+```
+
+### Workflow Triggers
+
+```typescript
+import { WorkflowsClient } from '@tribble/sdk';
+
+const workflows = new WorkflowsClient({
+  endpoint: 'https://workflows.tribble.com/invoke',
+  signingSecret: 'your-secret'
+});
+
+// Trigger a workflow
+await workflows.trigger({
+  slug: 'new-lead-handler',
+  input: {
+    leadId: 'LEAD-123',
+    source: 'website'
+  }
+});
+```
+
+### Webhook Handling
+
+```typescript
+import { verifySignature, createWebhookApp } from '@tribble/sdk';
+
+// Create webhook handler
+const app = createWebhookApp({ signingSecret: 'your-secret' });
+
+app.on('lead_created', async (event) => {
+  console.log('New lead:', event.data);
+});
+
+app.on('document_processed', async (event) => {
+  console.log('Document ready:', event.data.documentId);
+});
+
+// Start listening
+await app.listen(8080);
+```
+
+### Authentication
+
+```typescript
+import { TribbleAuth, FileStorage } from '@tribble/sdk';
+
+const auth = new TribbleAuth({
+  env: 'prod',
+  clientId: 'your-client-id',
+  redirectUri: 'http://localhost:3000/callback',
+  scopes: ['read', 'write'],
+  storage: new FileStorage('.tribble-tokens')
+});
+
+// Start OAuth2 PKCE flow
+const { url, codeVerifier } = await auth.loginPkce();
+// Redirect user to url...
+
+// Exchange code for tokens
+await auth.exchangeCode(code, codeVerifier);
+
+// Get access token (auto-refreshes if needed)
+const token = await auth.getAccessToken({ ensureFresh: true });
+```
+
+### Job Queue
+
+```typescript
+import { UploadQueue } from '@tribble/sdk';
+
+const queue = new UploadQueue({
+  concurrency: 3,
+  maxRetries: 5,
+  backoffMs: 1000
+});
+
+queue.on('success', ({ id, result }) => {
+  console.log(`Job ${id} completed:`, result);
+});
+
+queue.on('failed', ({ id, error }) => {
+  console.error(`Job ${id} failed:`, error);
+});
+
+// Enqueue jobs
+await queue.enqueue(async () => {
+  return await uploadDocument(file1);
+}, { meta: { filename: 'doc1.pdf' } });
+
+await queue.enqueue(async () => {
+  return await uploadDocument(file2);
+}, { meta: { filename: 'doc2.pdf' } });
+```
+
+## CLI
+
+```bash
+# Install CLI globally
+npm install -g @tribble/sdk-cli
+
+# Upload a document
+tribble upload \
+  --base-url https://ingest.tribble.com \
+  --token "your-token" \
+  --file ./document.pdf \
+  --type pdf
+
+# Trigger a workflow
+tribble workflows trigger my-workflow \
+  --endpoint https://workflows.tribble.com/invoke \
+  --secret "your-secret" \
+  --input '{"userId": "123"}'
+```
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Build all packages
+npm run build
+
+# Clean build artifacts
+npm run clean
+```
+
+## Project Structure
+
+```
+packages/
+  core/       # HTTP client, errors, utilities
+  agent/      # AI agent chat and streaming
+  ingest/     # Document ingestion
+  workflows/  # Workflow triggers
+  events/     # Webhook handling
+  auth/       # OAuth2 authentication
+  queue/      # Job queue
+  sdk/        # Main SDK (aggregates all packages)
+  cli/        # Command-line interface
+examples/
+  nestle-demo/  # Demo application
+```
+
+## Configuration
+
+The SDK uses `TribbleConfig` for configuration:
+
+```typescript
+interface TribbleConfig {
+  agent: {
+    baseUrl: string;
+    token: string;
+    email: string;
+    defaultHeaders?: Record<string, string>;
+  };
+  ingest?: {
+    baseUrl: string;
+    tokenProvider: () => Promise<string>;
+    defaultHeaders?: Record<string, string>;
+  };
+  workflows?: {
+    endpoint: string;
+    signingSecret: string;
+    defaultHeaders?: Record<string, string>;
+  };
+  telemetry?: {
+    serviceName?: string;
+    propagateTraceHeader?: string;
+  };
+}
+```
+
+## Error Handling
+
+The SDK provides typed errors for different failure modes:
+
+```typescript
+import {
+  TribbleError,
+  AuthError,
+  RateLimitError,
+  ValidationError,
+  ServerError,
+  NetworkError,
+  TimeoutError
+} from '@tribble/sdk-core';
+
+try {
+  await tribble.agent.chat('Hello');
+} catch (error) {
+  if (error instanceof RateLimitError) {
+    // Wait and retry
+  } else if (error instanceof AuthError) {
+    // Re-authenticate
+  } else if (error instanceof NetworkError) {
+    // Check connectivity
+  }
+}
+```
+
+## License
+
+UNLICENSED - Internal use only

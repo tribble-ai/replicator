@@ -1,13 +1,17 @@
 {
   "name": "tribble-sdk-monorepo",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "license": "UNLICENSED",
+  "description": "Tribble Platform SDK - Build GenAI applications with document ingestion, agent chat, and workflow automation",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run -w @tribble/sdk-core build && npm run -w @tribble/sdk-agent build && npm run -w @tribble/sdk-chat build && npm run -w @tribble/sdk-ingest build && npm run -w @tribble/sdk-docs build && npm run -w @tribble/sdk-workflows build && npm run -w @tribble/sdk-events build && npm run -w @tribble/sdk-actions build && npm run -w @tribble/sdk-connectors build && npm run -w @tribble/sdk-auth build && npm run -w @tribble/sdk-queue build && npm run -w @tribble/sdk-render build && npm run -w @tribble/sdk-integrations build && npm run -w @tribble/sdk-servicenow build && npm run -w @tribble/sdk-sap build && npm run -w @tribble/sdk-salesforce build && npm run -w @tribble/sdk-extensions build && npm run -w @tribble/sdk-policy build && npm run -w @tribble/sdk-capabilities build && npm run -w @tribble/sdk-control build && npm run -w @tribble/sdk-primitives build && npm run -w @tribble/sdk-test build && npm run -w @tribble/sdk-runner build && npm run -w @tribble/sdk build && npm run -w @tribble/sdk-cli build",
+    "build": "npm run build:packages && npm run build:sdk && npm run build:cli",
+    "build:packages": "npm run -w @tribble/sdk-core build && npm run -w @tribble/sdk-agent build && npm run -w @tribble/sdk-ingest build && npm run -w @tribble/sdk-workflows build && npm run -w @tribble/sdk-events build && npm run -w @tribble/sdk-auth build && npm run -w @tribble/sdk-queue build",
+    "build:sdk": "npm run -w @tribble/sdk build",
+    "build:cli": "npm run -w @tribble/sdk-cli build",
     "clean": "rm -rf packages/*/dist",
     "format": "prettier . --write"
   },

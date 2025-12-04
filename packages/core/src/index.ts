@@ -2,7 +2,6 @@ export interface TribbleConfig {
   agent: { baseUrl: string; token: string; email: string; defaultHeaders?: Record<string, string> };
   ingest?: { baseUrl: string; tokenProvider: () => Promise<string>; defaultHeaders?: Record<string, string> };
   workflows?: { endpoint: string; signingSecret: string; defaultHeaders?: Record<string, string> };
-  control?: { baseUrl: string; tokenProvider: () => Promise<string>; defaultHeaders?: Record<string, string> };
   telemetry?: { serviceName?: string; propagateTraceHeader?: string };
 }
 

@@ -12,9 +12,10 @@ This presentation sets up the context for the mobile demo, addressing Nestlé's 
 2. **The Challenge** - 6 pain points KAMs face daily
 3. **The Solution** - How Tribble orchestrates without replacing
 4. **Platform Architecture** - Decoupled innovation layer
-5. **Demo Overview** - 3 pillars (pause here to show mobile app)
-6. **Business Impact** - ROI and competitive advantages
-7. **Next Steps** - 4-week pilot program
+5. **Demo Overview** - 3 personas (NAM, KAM, Market) + Teams chat
+6. **ROI** - Retail Execution & KAM Productivity (Nestlé UK)
+7. **Business Impact** - Competitive advantages and outcomes
+8. **Next Steps** - 4-week pilot program
 
 ## Running the Presentation
 
@@ -26,10 +27,19 @@ npm run dev
 
 Open http://localhost:3001
 
+### Options
+
+- Exec cut (7 slides): append `?deck=exec` to the URL
+- Deep link to a slide: `?s=5` (or `#/5`)
+- Toggle print mode: press `p` (or use `?print`)
+- Brand theme: `?brand=nestle` (uses :root[data-brand="nestle"])
+
 ## Navigation
 
-- **Arrow Keys**: Next/Previous slide
+- **Arrow Keys / Page Up/Down**: Next/Previous slide
 - **Spacebar**: Next slide
+- **Home/End**: First/Last slide
+- **P**: Toggle print layout
 - **Click indicators**: Jump to specific slide
 
 ## Design System
@@ -40,11 +50,14 @@ Based on Tribble branding:
 - **Typography**: Inter font family
 - **Theme**: Dark mode with gradient accents
 
+Overrides for Nestlé:
+- When `?brand=nestle` is set, :root CSS variables switch `--brand-primary` to `#165C96`.
+
 ## Demo Flow
 
 1. **Slides 1-4**: Set up context (challenges, solution, architecture)
 2. **Slide 5**: Transition point - switch to mobile demo app
-3. **Show mobile app**: Demonstrate 3 pillars on actual device
+3. **Show mobile + Teams**: Walk NAM and KAM flows on mobile and punch out to Tribble in Microsoft Teams; show Market desktop analytics
 4. **Slides 6-7**: Return to presentation (impact, next steps)
 
 ## Key Messages

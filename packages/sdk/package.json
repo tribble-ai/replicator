@@ -1,6 +1,7 @@
 {
   "name": "@tribble/sdk",
   "version": "0.1.0",
+  "description": "Tribble Platform SDK - Build GenAI applications with document ingestion, agent chat, and workflow automation",
   "private": false,
   "type": "module",
   "sideEffects": false,
@@ -9,11 +10,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
-    },
-    "./primitives": {
-      "types": "./dist/primitives.d.ts",
-      "import": "./dist/primitives.mjs",
-      "require": "./dist/primitives.cjs"
     },
     "./agent": {
       "types": "./dist/agent.d.ts",
@@ -25,11 +21,6 @@
       "import": "./dist/ingest.mjs",
       "require": "./dist/ingest.cjs"
     },
-    "./docs": {
-      "types": "./dist/docs.d.ts",
-      "import": "./dist/docs.mjs",
-      "require": "./dist/docs.cjs"
-    },
     "./workflows": {
       "types": "./dist/workflows.d.ts",
       "import": "./dist/workflows.mjs",
@@ -40,35 +31,15 @@
       "import": "./dist/events.mjs",
       "require": "./dist/events.cjs"
     },
-    "./actions": {
-      "types": "./dist/actions.d.ts",
-      "import": "./dist/actions.mjs",
-      "require": "./dist/actions.cjs"
-    },
-    "./connectors": {
-      "types": "./dist/connectors.d.ts",
-      "import": "./dist/connectors.mjs",
-      "require": "./dist/connectors.cjs"
-    },
     "./auth": {
       "types": "./dist/auth.d.ts",
       "import": "./dist/auth.mjs",
       "require": "./dist/auth.cjs"
     },
-    "./chat": {
-      "types": "./dist/chat.d.ts",
-      "import": "./dist/chat.mjs",
-      "require": "./dist/chat.cjs"
-    },
     "./queue": {
       "types": "./dist/queue.d.ts",
       "import": "./dist/queue.mjs",
       "require": "./dist/queue.cjs"
-    },
-    "./render": {
-      "types": "./dist/render.d.ts",
-      "import": "./dist/render.mjs",
-      "require": "./dist/render.cjs"
     }
   },
   "main": "./dist/index.cjs",
@@ -76,21 +47,15 @@
   "types": "./dist/index.d.ts",
   "files": ["dist"],
   "scripts": {
-    "build": "tsup src/index.ts src/agent.ts src/chat.ts src/ingest.ts src/docs.ts src/workflows.ts src/events.ts src/actions.ts src/connectors.ts src/auth.ts src/queue.ts src/render.ts src/primitives.ts --format esm,cjs --dts --sourcemap --clean"
+    "build": "tsup src/index.ts src/agent.ts src/ingest.ts src/workflows.ts src/events.ts src/auth.ts src/queue.ts --format esm,cjs --dts --sourcemap --clean"
   },
   "dependencies": {
     "@tribble/sdk-core": "*",
     "@tribble/sdk-agent": "*",
-    "@tribble/sdk-chat": "*",
     "@tribble/sdk-ingest": "*",
-    "@tribble/sdk-primitives": "*",
-    "@tribble/sdk-docs": "*",
     "@tribble/sdk-workflows": "*",
     "@tribble/sdk-events": "*",
-    "@tribble/sdk-actions": "*",
-    "@tribble/sdk-connectors": "*",
     "@tribble/sdk-auth": "*",
-    "@tribble/sdk-queue": "*",
-    "@tribble/sdk-render": "*"
+    "@tribble/sdk-queue": "*"
   }
 }
