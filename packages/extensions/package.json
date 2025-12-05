@@ -1,0 +1,33 @@
+{
+  "name": "@tribble/sdk-extensions",
+  "version": "0.1.0",
+  "description": "Tribble SDK Extension Framework - Build tools, integrations, cartridges, and ingest adapters",
+  "private": false,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean"
+  },
+  "dependencies": {
+    "zod": "^3.23.0"
+  },
+  "peerDependencies": {
+    "@tribble/sdk-core": "*"
+  },
+  "peerDependenciesMeta": {
+    "@tribble/sdk-core": {
+      "optional": true
+    }
+  }
+}

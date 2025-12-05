@@ -1,0 +1,24 @@
+{
+  "name": "@tribble/sdk-prompts",
+  "version": "0.1.0",
+  "description": "Prompt registry, versioning, and A/B testing for Tribble SDK",
+  "private": false,
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean"
+  },
+  "dependencies": {
+    "@tribble/sdk-core": "*",
+    "@tribble/sdk-offline": "*"
+  }
+}

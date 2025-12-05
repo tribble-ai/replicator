@@ -1,14 +1,110 @@
 # Tribble SDK
 
-Build GenAI applications on the Tribble Platform with document ingestion, agent chat, and workflow automation.
+**Build extensions and applications for the Tribble AI Platform.**
 
-## Installation
+---
+
+## What is This?
+
+The **Tribble Platform** is an enterprise AI system that powers intelligent assistants, knowledge bases, and automated workflows. The **Tribble SDK** lets you:
+
+1. **Extend the Platform** - Add custom tools, integrations, AI personas, and file parsers
+2. **Build Applications** - Create web/mobile apps that consume platform capabilities
+
+```
+                                  TRIBBLE PLATFORM
+                    ┌─────────────────────────────────────────────┐
+                    │                                             │
+                    │   AI Agent Engine    Knowledge Base (Brain) │
+                    │   ┌─────────────┐    ┌─────────────────┐   │
+                    │   │ GPT-4o      │    │ Vector Search   │   │
+                    │   │ Claude      │    │ Document Store  │   │
+                    │   │ Tool Calls  │    │ Citations       │   │
+                    │   └─────────────┘    └─────────────────┘   │
+                    │                                             │
+                    │   Cartridges         Integrations           │
+                    │   ┌─────────────┐    ┌─────────────────┐   │
+                    │   │ AI Personas │    │ Salesforce      │   │
+                    │   │ Prompts     │    │ SAP, Oracle     │   │
+                    │   │ Tool Sets   │    │ Custom APIs     │   │
+                    │   └─────────────┘    └─────────────────┘   │
+                    │                                             │
+                    └──────────────────┬──────────────────────────┘
+                                       │
+                                       │ API
+                                       │
+        ┌──────────────────────────────┼──────────────────────────────┐
+        │                              │                              │
+        ▼                              ▼                              ▼
+┌───────────────────┐    ┌───────────────────────┐    ┌───────────────────┐
+│   EXTENSION KIT   │    │      CLIENT KIT       │    │    YOUR APP       │
+│                   │    │                       │    │                   │
+│ Add new:          │    │ Build apps with:      │    │ React/Mobile/Web  │
+│ • Tools           │    │ • Offline support     │    │ using platform    │
+│ • Integrations    │    │ • Structured output   │    │ capabilities      │
+│ • Cartridges      │    │ • Rate limiting       │    │                   │
+│ • File parsers    │    │ • Observability       │    │                   │
+└───────────────────┘    └───────────────────────┘    └───────────────────┘
+```
+
+---
+
+## Quick Start
+
+### Option A: Extend the Platform
+
+Create custom tools, integrations, or AI personas that run inside the platform.
+
+```bash
+# Initialize a new extension project
+npx tribble ext init my-extension
+cd my-extension
+npm install
+```
+
+```typescript
+// src/index.ts
+import { ToolBuilder, ExtensionBundle } from '@tribble/sdk-extensions';
+import { z } from 'zod';
+
+// Create a custom tool the AI can call
+const weatherTool = new ToolBuilder('get_weather')
+  .description('Get current weather for a location')
+  .parameter('city', z.string(), 'City name')
+  .handler(async (args, ctx) => {
+    const weather = await fetchWeather(args.city);
+    return {
+      content: `Weather in ${args.city}: ${weather.temp}°F, ${weather.conditions}`,
+    };
+  })
+  .build();
+
+// Bundle and export
+export default new ExtensionBundle({
+  name: 'weather-extension',
+  version: '1.0.0',
+  description: 'Weather data for AI assistants',
+  author: 'Your Company',
+  platformVersion: '>=2.0.0',
+})
+  .addTool(weatherTool)
+  .build();
+```
+
+```bash
+# Test and publish
+npm run build
+npx tribble ext validate
+npx tribble ext publish --env development
+```
+
+### Option B: Build a Client Application
+
+Create apps that consume platform capabilities.
 
 ```bash
 npm install @tribble/sdk
 ```
-
-## Quick Start
 
 ```typescript
 import { createTribble } from '@tribble/sdk';
@@ -16,709 +112,642 @@ import { createTribble } from '@tribble/sdk';
 const tribble = createTribble({
   agent: {
     baseUrl: 'https://api.tribble.com',
-    token: 'your-token',
-    email: 'user@example.com'
+    token: process.env.TRIBBLE_TOKEN,
+    email: 'user@company.com',
   },
-  ingest: {
-    baseUrl: 'https://ingest.tribble.com',
-    tokenProvider: async () => 'your-token'
-  },
-  workflows: {
-    endpoint: 'https://workflows.tribble.com/invoke',
-    signingSecret: 'your-secret'
-  }
+  offline: { enabled: true },
+  rateLimit: '100/minute',
 });
 
-// Chat with an AI agent
-const response = await tribble.agent.chat('Hello!');
-
-// Upload a document
-await tribble.ingest.uploadDocument({
-  file: pdfBuffer,
-  filename: 'document.pdf',
-  metadata: { title: 'My Document' }
+// Chat with AI
+const response = await tribble.agent.chat({
+  cartridge: 'sales-assistant',
+  message: 'What should I know before visiting Acme Corp tomorrow?',
 });
 
-// Trigger a workflow
-await tribble.workflows.trigger({
-  slug: 'process-lead',
-  input: { userId: '123' }
+// Get structured output
+const tasks = await tribble.structured.generate({
+  prompt: 'List 3 action items from this meeting',
+  schema: z.array(z.object({
+    task: z.string(),
+    priority: z.enum(['high', 'medium', 'low']),
+  })),
+});
+
+// Upload documents to knowledge base
+await tribble.ingest.upload({
+  file: document,
+  tags: ['sales', 'q4-planning'],
 });
 ```
 
-## Real-World Example: Field Sales Intelligence App
+---
 
-This example shows how to build a **Field Sales Intelligence App** (like the Nestlé KAM demo) that transforms 45-minute visit prep into a 2-minute AI-generated brief.
+## Understanding the Architecture
 
-### The Use Case
+### How Extensions Work
 
-**Problem:** Field sales reps spend 45 minutes before each store visit manually querying 6 different systems (CRM, ERP, BI tools) to prepare.
-
-**Solution:** An AI-powered app that:
-1. Ingests data from enterprise systems (store data, visit history, sales performance)
-2. Generates a 60-second brief with evidence-backed recommendations
-3. Provides a territory dashboard for managers to coach their teams
-
-### Architecture
+When you build an extension, you're adding components that run **inside** the Tribble Platform:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        FRONTEND                              │
-│  ┌─────────────────┐          ┌─────────────────────────┐   │
-│  │  Sales Rep App  │          │  Manager Dashboard      │   │
-│  │  (Mobile)       │          │  (Tablet)               │   │
-│  └────────┬────────┘          └────────────┬────────────┘   │
-└───────────┼────────────────────────────────┼────────────────┘
-            │                                │
-            ▼                                ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      YOUR BACKEND                            │
-│   /api/visit-prep      /api/territory      /api/ask         │
-└───────────┬────────────────────────────────┬────────────────┘
-            │                                │
-            ▼                                ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      TRIBBLE SDK                             │
-│   IngestClient          AgentClient         WorkflowsClient │
-└───────────┬────────────────────────────────┬────────────────┘
-            │                                │
-            ▼                                ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   TRIBBLE PLATFORM                           │
-│            (Knowledge Base + AI + Workflows)                 │
-└─────────────────────────────────────────────────────────────┘
+Your Extension                           Tribble Platform Runtime
+┌─────────────────────────┐              ┌─────────────────────────────────────┐
+│                         │              │                                     │
+│  ToolBuilder ──────────────────────────▶ AI Agent calls your tool           │
+│  "crm_search"           │              │ when user asks about customers      │
+│                         │   publishes  │                                     │
+│  IntegrationBuilder ───────────────────▶ Platform manages OAuth tokens,      │
+│  "salesforce"           │              │ connection health, credentials      │
+│                         │              │                                     │
+│  CartridgeBuilder ─────────────────────▶ Platform loads your AI persona,    │
+│  "sales-assistant"      │              │ prompt template, tool set           │
+│                         │              │                                     │
+│  IngestAdapterBuilder ─────────────────▶ Platform uses your parser when     │
+│  "excel-promotions"     │              │ users upload matching files         │
+│                         │              │                                     │
+└─────────────────────────┘              └─────────────────────────────────────┘
 ```
 
-### Step 1: Ingest Enterprise Data
+### How Client Applications Work
 
-First, load your enterprise data into Tribble's knowledge base:
+When you build a client app, you're calling the platform **externally**:
+
+```
+Your Application                         Tribble Platform
+┌─────────────────────────┐              ┌─────────────────────────────────────┐
+│                         │              │                                     │
+│  React/Mobile/Web App   │   HTTP API   │                                     │
+│                         │ ──────────▶  │  Agent: Chat with AI assistants     │
+│  @tribble/sdk           │              │  Brain: Search knowledge base       │
+│  @tribble/sdk-react     │ ◀──────────  │  Ingest: Upload documents           │
+│  @tribble/sdk-offline   │   Responses  │  Workflows: Trigger automations     │
+│                         │              │                                     │
+└─────────────────────────┘              └─────────────────────────────────────┘
+```
+
+---
+
+## Extension Components
+
+### 1. Tools
+
+Tools are functions the AI can call to fetch data or take actions.
+
+```typescript
+import { ToolBuilder } from '@tribble/sdk-extensions';
+import { z } from 'zod';
+
+const crmSearch = new ToolBuilder('crm_search')
+  // Description tells the AI when to use this tool
+  .description('Search CRM for customer accounts, contacts, and opportunities')
+
+  // Parameters with Zod schemas (auto-generates JSON Schema for LLM)
+  .parameter('query', z.string(), 'Search query')
+  .parameter('type', z.enum(['account', 'contact', 'opportunity']).optional(), 'Record type filter')
+  .parameter('limit', z.number().max(100).optional(), 'Max results (default 10)')
+
+  // Require the salesforce integration to be configured
+  .requiredIntegration('salesforce')
+
+  // The handler runs when AI calls this tool
+  .handler(async (args, ctx) => {
+    // ctx.services gives you platform capabilities
+    const sf = await ctx.services.integrations.get<SalesforceClient>('salesforce');
+    const results = await sf.search(args.query, { type: args.type, limit: args.limit });
+
+    // Log and track metrics
+    ctx.services.logger.info('CRM search executed', { query: args.query, resultCount: results.length });
+    ctx.services.metrics.increment('crm_search.invocations');
+
+    // Return content for the AI + optional citations
+    return {
+      content: JSON.stringify(results, null, 2),
+      citations: results.map(r => ({
+        title: r.name,
+        url: r.url,
+        snippet: r.description,
+      })),
+    };
+  })
+  .build();
+```
+
+**What happens at runtime:**
+1. User asks: "What's the status of the Acme deal?"
+2. AI decides to call `crm_search` with `{query: "Acme", type: "opportunity"}`
+3. Platform invokes your handler with credentials already set up
+4. Your handler queries Salesforce and returns results
+5. AI uses the results to answer the user
+
+### 2. Integrations
+
+Integrations connect the platform to external services with managed credentials.
+
+```typescript
+import { IntegrationBuilder } from '@tribble/sdk-extensions';
+
+const salesforce = new IntegrationBuilder('salesforce')
+  .displayName('Salesforce')
+  .description('Connect to Salesforce CRM')
+
+  // OAuth2 configuration - platform handles the flow
+  .oauth2({
+    authorizationUrl: 'https://login.salesforce.com/services/oauth2/authorize',
+    tokenUrl: 'https://login.salesforce.com/services/oauth2/token',
+    scopes: ['api', 'refresh_token'],
+  })
+
+  // Health check - platform monitors connection status
+  .healthCheck({
+    endpoint: '/services/data/v58.0/',
+    expectedStatus: [200],
+    intervalSeconds: 300,
+  })
+
+  // Factory creates your client when tools need it
+  .clientFactory(async (ctx) => {
+    return new SalesforceClient({
+      instanceUrl: ctx.credentials.metadata?.instanceUrl,
+      accessToken: ctx.credentials.accessToken,
+    });
+  })
+  .build();
+```
+
+**What the platform handles for you:**
+- OAuth flow UI and redirects
+- Token storage and encryption
+- Automatic token refresh
+- Connection health monitoring
+- Per-tenant credential isolation
+
+### 3. Cartridges
+
+Cartridges define AI personas with specific capabilities and prompts.
+
+```typescript
+import { CartridgeBuilder } from '@tribble/sdk-extensions';
+import { z } from 'zod';
+
+const salesAssistant = new CartridgeBuilder('sales-assistant')
+  .displayName('Sales Intelligence Assistant')
+  .description('AI assistant for field sales preparation and insights')
+
+  // Model selection
+  .model('gpt-4o')
+
+  // Tools this persona can use
+  .tools(['brain_search', 'crm_search', 'pos_query', 'get_weather'])
+
+  // System prompt with Handlebars templating
+  .promptTemplate(`
+You are a sales intelligence assistant helping {{userName}} prepare for customer visits.
+
+Your role:
+- Research customers before visits using CRM and internal documents
+- Identify sales opportunities based on POS data
+- Provide evidence-backed recommendations with citations
+
+Current context:
+- Territory: {{territory}}
+- Focus brands: {{focusBrands}}
+
+Always:
+1. Search internal knowledge base first
+2. Cross-reference with CRM data
+3. Cite your sources
+4. Be concise and actionable
+  `)
+
+  // Runtime configuration schema
+  .configSchema(z.object({
+    territory: z.string(),
+    focusBrands: z.array(z.string()),
+  }))
+
+  // Custom initialization
+  .init(async (ctx) => {
+    return {
+      preambleMessages: [{
+        role: 'assistant',
+        content: `Hello ${ctx.user?.name}! I'm ready to help you prepare for your customer visits today.`,
+      }],
+    };
+  })
+  .build();
+```
+
+**What happens when a user chats:**
+1. User opens chat with the "sales-assistant" cartridge
+2. Platform compiles the prompt template with user context
+3. User message goes to GPT-4o with the system prompt and available tools
+4. AI can call any of the configured tools to gather information
+5. Response is streamed back with citations
+
+### 4. Ingest Adapters
+
+Ingest adapters parse custom file formats for the knowledge base.
+
+```typescript
+import { IngestAdapterBuilder } from '@tribble/sdk-extensions';
+import XLSX from 'xlsx';
+
+const promotionsAdapter = new IngestAdapterBuilder('excel-promotions')
+  .displayName('Promotions Excel Export')
+  .description('Parse trade promotion spreadsheets from TPM systems')
+
+  // File types this adapter handles
+  .extensions(['.xlsx', '.xls'])
+  .mimeTypes([
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel',
+  ])
+
+  // Limits
+  .maxSize(100 * 1024 * 1024) // 100MB
+
+  // Parser implementation
+  .handler(async (data, ctx) => {
+    const workbook = XLSX.read(data);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+
+    // Convert each row to a searchable chunk
+    const chunks = rows.map((row: any, i) => ({
+      content: `
+        Promotion: ${row.promotionName}
+        Customer: ${row.customerName}
+        Start: ${row.startDate} | End: ${row.endDate}
+        Spend: $${row.spend} | Lift: ${row.expectedLift}%
+        Status: ${row.status}
+      `,
+      index: i,
+      title: row.promotionName,
+      metadata: {
+        customerId: row.customerId,
+        status: row.status,
+        spend: row.spend,
+      },
+    }));
+
+    return {
+      chunks,
+      metadata: {
+        title: ctx.file.name,
+        rowCount: rows.length,
+      },
+      autoTags: ['promotions', 'tpm', new Date().getFullYear().toString()],
+    };
+  })
+  .build();
+```
+
+**What happens when a user uploads a file:**
+1. User uploads "Q4_Promotions.xlsx"
+2. Platform detects .xlsx extension, routes to your adapter
+3. Your handler parses the Excel file into chunks
+4. Platform embeds chunks and stores in vector database
+5. AI can now search and cite this data in conversations
+
+---
+
+## Extension Development Workflow
+
+### 1. Initialize
+
+```bash
+npx tribble ext init my-extension
+cd my-extension
+npm install
+```
+
+This creates:
+```
+my-extension/
+├── src/
+│   └── index.ts        # Your extension code
+├── test/
+│   └── index.test.ts   # Tests
+├── package.json
+├── tsconfig.json
+└── tribble.config.json # Extension configuration
+```
+
+### 2. Develop
+
+```typescript
+// src/index.ts
+import { ToolBuilder, IntegrationBuilder, CartridgeBuilder, ExtensionBundle } from '@tribble/sdk-extensions';
+
+// ... build your components ...
+
+export default new ExtensionBundle({
+  name: 'my-extension',
+  version: '1.0.0',
+  description: 'My custom extension',
+  author: 'My Company',
+  platformVersion: '>=2.0.0',
+})
+  .addTool(myTool)
+  .addIntegration(myIntegration)
+  .addCartridge(myCartridge)
+  .build();
+```
+
+### 3. Test
+
+```bash
+# Validate against security policies
+npx tribble ext validate --policy enterprise
+
+# Run tests with mocked platform services
+npx tribble ext test
+
+# Run extension locally
+npx tribble runner
+```
+
+Testing with mocked services:
+
+```typescript
+import { ExtensionTestSuite } from '@tribble/sdk-test';
+import extension from '../src';
+
+const suite = new ExtensionTestSuite(extension);
+
+suite.test('crm_search returns customer data', async (ctx) => {
+  const tool = ctx.getTool('crm_search');
+
+  // Mock the integration
+  tool.mockIntegration('salesforce', {
+    search: async () => [{ name: 'Acme Corp', id: '123' }],
+  });
+
+  const result = await tool.invoke({ query: 'Acme' });
+
+  tool.assertSuccess(result);
+  tool.assertContentContains(result, 'Acme Corp');
+});
+```
+
+### 4. Publish
+
+```bash
+# Preview what will be deployed
+npx tribble ext plan --env development
+
+# Publish to development
+npx tribble ext publish --env development
+
+# Promote through environments
+npx tribble ext promote --from development --to staging
+npx tribble ext promote --from staging --to production
+```
+
+---
+
+## Client SDK Usage
+
+### Basic Setup
 
 ```typescript
 import { createTribble } from '@tribble/sdk';
 
 const tribble = createTribble({
-  agent: { baseUrl: TRIBBLE_CHAT_URL, token: TOKEN, email: EMAIL },
-  ingest: { baseUrl: TRIBBLE_INGEST_URL, tokenProvider: async () => TOKEN },
-  workflows: { endpoint: WORKFLOW_URL, signingSecret: SECRET }
-});
-
-// 1. Ingest store master data
-await tribble.ingest.uploadStructuredData({
-  data: storesCsv,
-  format: 'csv',
-  metadata: {
-    title: 'Store Master Data',
-    entityType: 'store',
-    schema: [
-      { name: 'store_id', type: 'string', required: true },
-      { name: 'name', type: 'string', required: true },
-      { name: 'manager_name', type: 'string' },
-      { name: 'region', type: 'string' },
-      { name: 'format', type: 'string' },
-      { name: 'demographics', type: 'string' }
-    ],
-    primaryKey: 'store_id'
-  }
-});
-
-// 2. Ingest visit history from CRM
-await tribble.ingest.uploadStructuredData({
-  data: visitHistoryJson,
-  format: 'json',
-  metadata: {
-    title: 'Visit History',
-    entityType: 'visit',
-    schema: [
-      { name: 'visit_id', type: 'string', required: true },
-      { name: 'store_id', type: 'string', required: true },
-      { name: 'visit_date', type: 'date', required: true },
-      { name: 'actions_completed', type: 'array' },
-      { name: 'issues_identified', type: 'array' },
-      { name: 'manager_feedback', type: 'string' }
-    ]
-  }
-});
-
-// 3. Ingest sales data from ERP
-await tribble.ingest.uploadStructuredData({
-  data: salesDataCsv,
-  format: 'csv',
-  metadata: {
-    title: 'Sales Performance (90 days)',
-    entityType: 'sales',
-    timestampField: 'date'
-  }
-});
-
-// 4. Ingest campaign materials
-await tribble.ingest.uploadDocument({
-  file: campaignDeckBuffer,
-  filename: 'Q4-Campaign-Playbook.pdf',
-  metadata: {
-    title: 'Q4 Campaign Playbook',
-    category: 'campaigns',
-    tags: ['Q4', 'promotional', 'playbook']
-  }
-});
-```
-
-### Step 2: Build the Visit Prep API
-
-Create an endpoint that generates AI-powered visit briefs:
-
-```typescript
-// POST /api/visit-prep
-async function generateVisitPrep(req, res) {
-  const { storeId } = req.body;
-
-  // Build the prompt - Tribble has access to all ingested data
-  const prompt = `
-You are a field sales intelligence assistant.
-
-Generate a visit prep brief for store ${storeId}.
-
-Return JSON with this exact structure:
-{
-  "store": {
-    "id": "store ID",
-    "name": "store name",
-    "manager": "manager name",
-    "demographics": "demographic profile"
+  agent: {
+    baseUrl: process.env.TRIBBLE_API_URL,
+    token: process.env.TRIBBLE_TOKEN,
+    email: currentUser.email,
   },
-  "executive_summary": "One sentence on what's trending at this store",
-  "next_best_actions": [
-    {
-      "priority": "HIGH|MEDIUM|LOW",
-      "action": "What to do",
-      "rationale": "Why this matters",
-      "evidence": {
-        "similar_store": "Store that did this successfully",
-        "result": "What happened (e.g., +14% category lift)",
-        "timeframe": "How long it took"
-      },
-      "expected_impact": "Expected result for this store"
-    }
-  ],
-  "risk_alerts": [
-    {
-      "type": "OOS|COMPLIANCE|COMPETITOR",
-      "product": "affected product",
-      "details": "what's happening",
-      "daily_impact": "£ value at risk"
-    }
-  ]
-}
-
-Include 3 next-best-actions ranked by impact.
-Every action MUST have evidence from a similar store that succeeded.
-`;
-
-  // Call Tribble agent
-  const response = await tribble.agent.chat({ message: prompt });
-
-  // Parse and return structured response
-  const brief = JSON.parse(response.message);
-  res.json(brief);
-}
-```
-
-### Step 3: Build the Territory Dashboard API
-
-Create endpoints for the manager's territory view:
-
-```typescript
-// GET /api/territory/:territoryId
-async function getTerritoryDashboard(req, res) {
-  const { territoryId } = req.params;
-
-  const prompt = `
-Analyze territory ${territoryId} and return JSON:
-{
-  "kpis": {
-    "revenue_90d": "formatted revenue",
-    "yoy_growth": "percentage with sign",
-    "oos_incidents": number,
-    "visits_completed": number
+  ingest: {
+    baseUrl: process.env.TRIBBLE_INGEST_URL,
+    tokenProvider: async () => getAccessToken(),
   },
-  "category_mix": [
-    { "category": "name", "revenue": "formatted", "percentage": number }
-  ],
-  "store_leaderboard": [
-    {
-      "store_id": "id",
-      "name": "store name",
-      "revenue": "formatted",
-      "yoy_change": "percentage with sign",
-      "status": "improving|stable|declining"
-    }
-  ],
-  "risk_alerts": [
-    { "store": "name", "issue": "description", "impact": "£ value" }
-  ],
-  "coaching_opportunities": [
-    { "rep_name": "name", "insight": "coaching suggestion" }
-  ]
-}
-`;
-
-  const response = await tribble.agent.chat({ message: prompt });
-  const dashboard = JSON.parse(response.message);
-  res.json(dashboard);
-}
-
-// GET /api/territory/:territoryId/insight/:metric
-async function getMetricInsight(req, res) {
-  const { territoryId, metric } = req.params;
-
-  const prompt = `
-Explain why ${metric} changed in territory ${territoryId}.
-
-Return JSON:
-{
-  "metric": "${metric}",
-  "current_value": "value",
-  "change": "percentage or absolute change",
-  "drivers": [
-    { "factor": "what drove the change", "contribution": "how much" }
-  ],
-  "recommendations": [
-    "actionable recommendation 1",
-    "actionable recommendation 2"
-  ]
-}
-`;
-
-  const response = await tribble.agent.chat({ message: prompt });
-  res.json(JSON.parse(response.message));
-}
+  offline: { enabled: true },
+  observability: { serviceName: 'my-app' },
+  rateLimit: '100/minute',
+});
 ```
 
-### Step 4: Add Streaming Chat ("Ask Tribble")
-
-Let users ask follow-up questions with streaming responses:
+### Chat with AI
 
 ```typescript
-// POST /api/ask (streaming)
-async function askTribble(req, res) {
-  const { question, context } = req.body;
+// Simple chat
+const response = await tribble.agent.chat({
+  cartridge: 'sales-assistant',
+  message: 'What should I know about visiting Store #1234 tomorrow?',
+});
+console.log(response.content);
 
-  // Set up Server-Sent Events
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-
-  const prompt = `
-Context: Store ${context.storeId}, Territory ${context.territoryId}
-
-User question: ${question}
-
-Answer based on the ingested data. Be specific with numbers and evidence.
-`;
-
-  // Stream the response
-  for await (const chunk of tribble.agent.stream({ message: prompt })) {
-    res.write(`data: ${JSON.stringify({ delta: chunk.delta })}\n\n`);
-  }
-
-  res.write('data: [DONE]\n\n');
-  res.end();
+// Streaming
+const stream = await tribble.agent.streamChat({
+  cartridge: 'sales-assistant',
+  message: 'Summarize Q3 performance',
+});
+for await (const chunk of stream) {
+  process.stdout.write(chunk.content);
 }
+
+// With conversation history
+const conv = tribble.conversations.create({ id: 'user-123-session-1' });
+await conv.send('Hello!');
+await conv.send('What were we discussing?'); // Has context from previous message
 ```
 
-### Step 5: Automate with Workflows
-
-Trigger actions automatically:
+### Structured Output
 
 ```typescript
-// Morning brief scheduler (run via cron)
-async function sendMorningBriefs() {
-  const todaysVisits = await getScheduledVisits();
+import { z } from '@tribble/sdk';
 
-  for (const visit of todaysVisits) {
-    // Generate the brief
-    const brief = await generateVisitPrep(visit.storeId);
-
-    // Trigger notification workflow
-    await tribble.workflows.trigger({
-      slug: 'send-morning-brief',
-      input: {
-        repId: visit.repId,
-        storeId: visit.storeId,
-        brief
-      }
-    });
-  }
-}
-
-// Post-visit logging
-async function onVisitComplete(visitData) {
-  await tribble.workflows.trigger({
-    slug: 'post-visit-sync',
-    input: {
-      storeId: visitData.storeId,
-      repId: visitData.repId,
-      actionsCompleted: visitData.actions,
-      notes: visitData.notes,
-      nextSteps: visitData.nextSteps
-    }
-  });
-}
+// Generate data matching a schema
+const tasks = await tribble.structured.generate({
+  prompt: 'List 3 action items from the Q4 planning meeting',
+  schema: z.array(z.object({
+    task: z.string(),
+    assignee: z.string(),
+    dueDate: z.string(),
+    priority: z.enum(['high', 'medium', 'low']),
+  })),
+});
+// Returns: [{ task: '...', assignee: '...', ... }, ...]
 ```
 
-### Step 6: Build the Frontend
+### Offline Support
 
-**Sales Rep Mobile App (React Native / PWA):**
+```typescript
+// Cache expensive operations
+const customerData = await tribble.cache.getOrFetch(
+  `customer:${customerId}`,
+  async () => fetchCustomerFromCRM(customerId),
+  { ttl: '1h' }
+);
 
-```jsx
-function VisitPrepScreen({ storeId }) {
-  const [brief, setBrief] = useState(null);
-  const [loading, setLoading] = useState(true);
+// Queue operations when offline
+tribble.sync.enqueue({
+  type: 'UPDATE_VISIT_NOTES',
+  payload: { visitId, notes },
+});
 
-  useEffect(() => {
-    fetch(`/api/visit-prep`, {
-      method: 'POST',
-      body: JSON.stringify({ storeId })
-    })
-      .then(r => r.json())
-      .then(setBrief)
-      .finally(() => setLoading(false));
-  }, [storeId]);
+// Sync when back online
+tribble.sync.on('online', async () => {
+  await tribble.sync.flush();
+});
+```
 
-  if (loading) return <LoadingSpinner />;
+### React Integration
 
+```typescript
+import { TribbleProvider, useChat, useAgent } from '@tribble/sdk-react';
+
+function App() {
   return (
-    <ScrollView style={styles.container}>
-      {/* Store Header */}
-      <View style={styles.storeCard}>
-        <Text style={styles.storeName}>{brief.store.name}</Text>
-        <Text style={styles.manager}>Manager: {brief.store.manager}</Text>
-        <Text style={styles.demographics}>{brief.store.demographics}</Text>
-      </View>
-
-      {/* Executive Summary */}
-      <View style={styles.summary}>
-        <Text style={styles.summaryText}>{brief.executive_summary}</Text>
-      </View>
-
-      {/* Next Best Actions */}
-      <Text style={styles.sectionTitle}>Next Best Actions</Text>
-      {brief.next_best_actions.map((action, i) => (
-        <ActionCard key={i} action={action} />
-      ))}
-
-      {/* Risk Alerts */}
-      {brief.risk_alerts.length > 0 && (
-        <>
-          <Text style={styles.sectionTitle}>Risk Alerts</Text>
-          {brief.risk_alerts.map((alert, i) => (
-            <RiskAlert key={i} alert={alert} />
-          ))}
-        </>
-      )}
-
-      {/* Ask Tribble Button */}
-      <TouchableOpacity
-        style={styles.askButton}
-        onPress={() => navigation.navigate('Chat', { storeId })}
-      >
-        <Text>Ask Tribble</Text>
-      </TouchableOpacity>
-    </ScrollView>
+    <TribbleProvider config={tribbleConfig}>
+      <ChatInterface />
+    </TribbleProvider>
   );
 }
 
-function ActionCard({ action }) {
-  return (
-    <View style={[styles.actionCard, styles[action.priority.toLowerCase()]]}>
-      <View style={styles.priorityBadge}>
-        <Text>{action.priority}</Text>
-      </View>
-      <Text style={styles.actionText}>{action.action}</Text>
-      <Text style={styles.rationale}>{action.rationale}</Text>
-      <View style={styles.evidence}>
-        <Text style={styles.evidenceTitle}>Evidence:</Text>
-        <Text>{action.evidence.similar_store}: {action.evidence.result}</Text>
-        <Text style={styles.timeframe}>{action.evidence.timeframe}</Text>
-      </View>
-      <Text style={styles.impact}>Expected: {action.expected_impact}</Text>
-    </View>
-  );
-}
-```
-
-**Manager Territory Dashboard (React):**
-
-```jsx
-function TerritoryDashboard({ territoryId }) {
-  const [data, setData] = useState(null);
-  const [selectedInsight, setSelectedInsight] = useState(null);
-
-  useEffect(() => {
-    fetch(`/api/territory/${territoryId}`)
-      .then(r => r.json())
-      .then(setData);
-  }, [territoryId]);
-
-  if (!data) return <LoadingSpinner />;
+function ChatInterface() {
+  const { messages, send, isLoading } = useChat({ cartridge: 'sales-assistant' });
 
   return (
-    <div className="dashboard">
-      {/* KPI Row */}
-      <div className="kpi-row">
-        <KPICard
-          label="90-Day Revenue"
-          value={data.kpis.revenue_90d}
-          onInfoClick={() => loadInsight('revenue')}
-        />
-        <KPICard
-          label="YoY Growth"
-          value={data.kpis.yoy_growth}
-          positive={data.kpis.yoy_growth.startsWith('+')}
-        />
-        <KPICard
-          label="OOS Incidents"
-          value={data.kpis.oos_incidents}
-          alert={data.kpis.oos_incidents > 3}
-        />
-      </div>
-
-      {/* Two Column Layout */}
-      <div className="columns">
-        <div className="left-column">
-          <CategoryMixChart data={data.category_mix} />
-          <StoreLeaderboard
-            stores={data.store_leaderboard}
-            onStoreClick={(store) => openStoreDetail(store)}
-          />
-        </div>
-        <div className="right-column">
-          <RiskAlerts alerts={data.risk_alerts} />
-          <CoachingOpportunities items={data.coaching_opportunities} />
-        </div>
-      </div>
-
-      {/* Insight Modal */}
-      {selectedInsight && (
-        <InsightModal
-          insight={selectedInsight}
-          onClose={() => setSelectedInsight(null)}
-        />
-      )}
+    <div>
+      {messages.map(msg => <Message key={msg.id} {...msg} />)}
+      <input onSubmit={e => send(e.target.value)} disabled={isLoading} />
     </div>
   );
 }
 ```
 
-### What This Achieves
-
-| Before | After |
-|--------|-------|
-| 45 min prep across 6 systems | 2 min AI-generated brief |
-| Generic recommendations | Evidence-backed actions from similar stores |
-| No visibility for managers | Real-time territory dashboard |
-| Manual post-visit logging | Automated workflow triggers |
-| Static reports | Conversational "Ask Tribble" follow-ups |
-
 ---
 
-## Packages
+## Package Reference
+
+### Extension Kit (for extending the platform)
 
 | Package | Description |
 |---------|-------------|
-| `@tribble/sdk` | Main SDK - use this for most applications |
+| `@tribble/sdk-extensions` | Core builders: ToolBuilder, IntegrationBuilder, CartridgeBuilder, IngestAdapterBuilder |
+| `@tribble/sdk-test` | Testing utilities with mocked platform services |
+| `@tribble/sdk-policy` | Security policy validation (Enterprise, Development, Sandbox) |
+| `@tribble/sdk-capabilities` | Platform capability version checking |
+| `@tribble/sdk-control` | Control plane API for deployment management |
+| `@tribble/sdk-primitives` | Low-level upload and batch operations |
+| `@tribble/sdk-runner` | Local extension execution for development |
+
+### Client Kit (for building applications)
+
+| Package | Description |
+|---------|-------------|
+| `@tribble/sdk` | Main entry point - includes everything below |
+| `@tribble/sdk-react` | React components and hooks |
+| `@tribble/sdk-structured` | Zod-based structured output |
+| `@tribble/sdk-offline` | Caching, offline storage, sync queue |
+| `@tribble/sdk-conversations` | Multi-turn conversation management |
+| `@tribble/sdk-telemetry` | Tracing, metrics, logging |
+| `@tribble/sdk-prompts` | Prompt registry with versioning and A/B testing |
+| `@tribble/sdk-batch` | Rate limiting, circuit breakers, retry logic |
+
+### Platform Packages (low-level clients)
+
+| Package | Description |
+|---------|-------------|
 | `@tribble/sdk-core` | HTTP client, errors, utilities |
-| `@tribble/sdk-agent` | AI agent chat and streaming |
-| `@tribble/sdk-ingest` | Document ingestion (PDF, HTML, CSV, JSON, spreadsheets) |
-| `@tribble/sdk-workflows` | Workflow triggers with HMAC signing |
+| `@tribble/sdk-agent` | Agent chat API client |
+| `@tribble/sdk-ingest` | Document ingestion client |
+| `@tribble/sdk-workflows` | Workflow trigger client |
 | `@tribble/sdk-events` | Webhook signature verification |
-| `@tribble/sdk-auth` | OAuth2 PKCE authentication |
-| `@tribble/sdk-queue` | Job queue with retries |
-| `@tribble/sdk-cli` | Command-line interface |
+| `@tribble/sdk-auth` | OAuth2 authentication helpers |
+| `@tribble/sdk-queue` | Background job queue |
 
-## Features
+---
 
-### Agent Chat
+## Security Policies
 
-```typescript
-import { AgentClient } from '@tribble/sdk';
-
-const agent = new AgentClient({
-  baseUrl: 'https://api.tribble.com',
-  token: 'your-token',
-  email: 'user@example.com'
-});
-
-// Simple chat
-const response = await agent.chat({ message: 'What are today\'s top priorities?' });
-console.log(response.message);
-
-// Streaming response
-for await (const chunk of agent.stream({ message: 'Summarize the quarterly report' })) {
-  process.stdout.write(chunk.delta);
-}
-
-// Parse JSON from response
-const data = agent.parseJSON(response.message);
-```
-
-### Document Ingestion
-
-```typescript
-import { IngestClient } from '@tribble/sdk';
-
-const ingest = new IngestClient({
-  baseUrl: 'https://ingest.tribble.com',
-  tokenProvider: async () => 'your-token'
-});
-
-// Upload PDF
-await ingest.uploadPDF({
-  file: pdfBuffer,
-  filename: 'report.pdf',
-  metadata: { category: 'reports', year: 2024 }
-});
-
-// Upload CSV with schema validation
-await ingest.uploadStructuredData({
-  data: csvString,
-  format: 'csv',
-  metadata: {
-    schema: [
-      { name: 'email', type: 'string', required: true },
-      { name: 'revenue', type: 'number', required: true }
-    ],
-    validateSchema: true
-  }
-});
-
-// Upload with auto-detection
-await ingest.uploadDocument({
-  file: fileBuffer,
-  filename: 'document.pdf'
-});
-```
-
-### Workflow Triggers
-
-```typescript
-import { WorkflowsClient } from '@tribble/sdk';
-
-const workflows = new WorkflowsClient({
-  endpoint: 'https://workflows.tribble.com/invoke',
-  signingSecret: 'your-secret'
-});
-
-await workflows.trigger({
-  slug: 'new-lead-handler',
-  input: { leadId: 'LEAD-123', source: 'website' }
-});
-```
-
-### Webhook Handling
-
-```typescript
-import { createWebhookApp } from '@tribble/sdk';
-
-const app = createWebhookApp({ signingSecret: 'your-secret' });
-
-app.on('document_processed', async (event) => {
-  console.log('Document ready:', event.data.documentId);
-});
-
-await app.listen(8080);
-```
-
-### Authentication
-
-```typescript
-import { TribbleAuth, FileStorage } from '@tribble/sdk';
-
-const auth = new TribbleAuth({
-  env: 'prod',
-  clientId: 'your-client-id',
-  redirectUri: 'http://localhost:3000/callback',
-  scopes: ['read', 'write'],
-  storage: new FileStorage('.tribble-tokens')
-});
-
-// OAuth2 PKCE flow
-const { url, codeVerifier } = await auth.loginPkce();
-// ... redirect user, get code ...
-await auth.exchangeCode(code, codeVerifier);
-
-// Get token (auto-refreshes)
-const token = await auth.getAccessToken({ ensureFresh: true });
-```
-
-### Job Queue
-
-```typescript
-import { UploadQueue } from '@tribble/sdk';
-
-const queue = new UploadQueue({
-  concurrency: 3,
-  maxRetries: 5,
-  backoffMs: 1000
-});
-
-queue.on('success', ({ id, result }) => console.log(`Done: ${id}`));
-queue.on('failed', ({ id, error }) => console.error(`Failed: ${id}`, error));
-
-await queue.enqueue(async () => uploadDocument(file), { meta: { name: 'doc.pdf' } });
-```
-
-## CLI
+Extensions are validated against security policies before deployment:
 
 ```bash
-npm install -g @tribble/sdk-cli
+# Validate against enterprise policy (strictest)
+npx tribble ext validate --policy enterprise
 
-# Upload a document
-tribble upload --base-url https://ingest.tribble.com --token "..." --file ./doc.pdf
-
-# Trigger a workflow
-tribble workflows trigger my-workflow --endpoint https://... --secret "..." --input '{}'
+# Development policy (warnings only)
+npx tribble ext validate --policy development
 ```
 
-## Project Structure
-
-```
-packages/
-  core/       # HTTP client, errors, utilities
-  agent/      # AI agent chat and streaming
-  ingest/     # Document ingestion
-  workflows/  # Workflow triggers
-  events/     # Webhook handling
-  auth/       # OAuth2 authentication
-  queue/      # Job queue
-  sdk/        # Main SDK (aggregates all packages)
-  cli/        # Command-line interface
-examples/
-  nestle-demo/  # Field sales intelligence demo
-```
-
-## Error Handling
+| Policy | Use Case | Strictness |
+|--------|----------|------------|
+| **Enterprise** | Production deployments | Blocks: HTTP, unapproved integrations, PII without encryption |
+| **Development** | Local testing | Warnings only |
+| **Sandbox** | Isolated testing | No external network, read-only data |
 
 ```typescript
-import {
-  AuthError,
-  RateLimitError,
-  ValidationError,
-  NetworkError,
-  TimeoutError
-} from '@tribble/sdk-core';
+import { PolicyValidator, ENTERPRISE_POLICY } from '@tribble/sdk-policy';
 
-try {
-  await tribble.agent.chat({ message: 'Hello' });
-} catch (error) {
-  if (error instanceof RateLimitError) {
-    // Wait and retry
-  } else if (error instanceof AuthError) {
-    // Re-authenticate
-  } else if (error instanceof NetworkError) {
-    // Check connectivity
-  }
+const validator = new PolicyValidator(ENTERPRISE_POLICY);
+const result = validator.validate(extension.manifest);
+
+if (!result.valid) {
+  result.violations.forEach(v => {
+    console.error(`[${v.severity}] ${v.message}`);
+    if (v.suggestion) console.log(`  Fix: ${v.suggestion}`);
+  });
 }
 ```
+
+---
+
+## CLI Reference
+
+```bash
+# Extension Commands
+tribble ext init <name>          # Create new extension project
+tribble ext validate             # Validate against policies
+tribble ext test                 # Run extension tests
+tribble ext plan --env <env>     # Preview deployment
+tribble ext publish --env <env>  # Deploy extension
+tribble ext promote              # Move between environments
+tribble ext freeze               # Lock version in production
+tribble ext migrate              # Run migrations
+
+# Development
+tribble runner                   # Run extension locally
+
+# Document Operations
+tribble upload <file>            # Upload to knowledge base
+tribble connectors list          # List available integrations
+```
+
+---
+
+## Examples
+
+The `examples/` directory contains complete working examples:
+
+- **nestle-demo/** - Field sales intelligence application
+  - Full React frontend
+  - Custom cartridge for sales preparation
+  - CRM and POS tool integrations
+  - Territory-based knowledge base
+
+---
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Build all packages
+npm run build
+
+# Clean build artifacts
+npm run clean
+
+# Format code
+npm run format
+```
+
+---
 
 ## License
 

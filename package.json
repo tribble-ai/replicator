@@ -1,24 +1,30 @@
 {
   "name": "tribble-sdk-monorepo",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "license": "UNLICENSED",
-  "description": "Tribble Platform SDK - Build GenAI applications with document ingestion, agent chat, and workflow automation",
+  "description": "Tribble Platform SDK - Enterprise-grade extension framework for building tools, integrations, cartridges, and ingest adapters",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build:packages && npm run build:sdk && npm run build:cli",
-    "build:packages": "npm run -w @tribble/sdk-core build && npm run -w @tribble/sdk-agent build && npm run -w @tribble/sdk-ingest build && npm run -w @tribble/sdk-workflows build && npm run -w @tribble/sdk-events build && npm run -w @tribble/sdk-auth build && npm run -w @tribble/sdk-queue build",
+    "build": "npm run build:extensions && npm run build:core && npm run build:enhanced && npm run build:sdk && npm run build:cli",
+    "build:extensions": "npm run -w @tribble/sdk-extensions build && npm run -w @tribble/sdk-capabilities build && npm run -w @tribble/sdk-test build && npm run -w @tribble/sdk-policy build && npm run -w @tribble/sdk-control build && npm run -w @tribble/sdk-primitives build && npm run -w @tribble/sdk-runner build",
+    "build:core": "npm run -w @tribble/sdk-core build && npm run -w @tribble/sdk-agent build && npm run -w @tribble/sdk-ingest build && npm run -w @tribble/sdk-workflows build && npm run -w @tribble/sdk-events build && npm run -w @tribble/sdk-auth build && npm run -w @tribble/sdk-queue build",
+    "build:enhanced": "npm run -w @tribble/sdk-offline build && npm run -w @tribble/sdk-structured build && npm run -w @tribble/sdk-conversations build && npm run -w @tribble/sdk-telemetry build && npm run -w @tribble/sdk-prompts build && npm run -w @tribble/sdk-batch build && npm run -w @tribble/sdk-react build",
     "build:sdk": "npm run -w @tribble/sdk build",
     "build:cli": "npm run -w @tribble/sdk-cli build",
     "clean": "rm -rf packages/*/dist",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "test": "echo 'No tests configured yet'"
   },
   "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
     "prettier": "^3.3.3",
     "tsup": "^8.2.4",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "zod": "^3.23.0"
   },
   "packageManager": "npm@10.5.0"
 }

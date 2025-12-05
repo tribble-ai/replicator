@@ -1,7 +1,7 @@
 {
   "name": "@tribble/sdk-cli",
-  "version": "0.1.0",
-  "description": "Tribble Platform CLI - Upload documents and trigger workflows",
+  "version": "0.2.0",
+  "description": "Tribble Platform CLI - Build, test, and publish extensions",
   "private": false,
   "type": "module",
   "bin": {
@@ -11,6 +11,11 @@
     "build": "tsup src/index.ts --format esm,cjs --sourcemap --clean"
   },
   "dependencies": {
-    "@tribble/sdk": "*"
+    "@tribble/sdk": "*",
+    "@tribble/sdk-extensions": "*",
+    "@tribble/sdk-test": "*",
+    "@tribble/sdk-policy": "*",
+    "@tribble/sdk-control": "*",
+    "@tribble/sdk-runner": "*"
   }
 }
