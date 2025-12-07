@@ -1,0 +1,20 @@
+{
+  "name": "@tribble-examples/logistics-extension",
+  "version": "1.0.0",
+  "description": "Logistics and supply chain extension example",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@tribble/extensions": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.3.0"
+  }
+}
