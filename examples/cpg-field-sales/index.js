@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
-import { createTribble, actions } from '@tribble/sdk';
+import { createTribble } from '@tribble/sdk';
 import { UploadQueue } from '@tribble/sdk/queue';
 import path from 'node:path';
 import fs from 'node:fs/promises';
@@ -220,36 +220,53 @@ async function orchestrate(job, { attachments, traceId, generateArtifacts }) {
   job.status = 'preparing';
   addLog(job, `Preparing research prompts for retailers: ${job.retailers.join(', ') || '(none specified)'}`);
 
-  const researchActions = (job.retailers || []).slice(0, 5).map((r) => ({
-    kind: 'web.search',
-    params: { query: `${r} weekly ad ${job.territory || ''} ${new Date(job.since).toLocaleString('en', { month: 'long', year: 'numeric' })}`.trim(), limit: 3 },
-  }));
-
   const evidence = ingested.length ? ingested : references;
 
-  const prompt = actions.compose([
-    actions.salesforce.lookupAccount({ accountId: job.accountId }),
-    // Custom search actions for agent tool use (if available)
-    ...researchActions,
-    actions.generate.brief({
-      scope: 'field-sales-prep',
-      period: `since ${job.since}`,
-      territory: job.territory,
-      stores: job.stores,
-      retailers: job.retailers,
-      route: job.route,
-      evidenceDocs: evidence,
-      evidenceRefs: references,
-      outputs: {
-        format: 'JSON',
-        sections: ['summary', 'pricingFlags', 'oosRisks', 'promoOpportunities', 'storeTasks', 'talkingPoints', 'attachments', 'routePlan'],
-      },
-      constraints: {
-        tokens: 1200,
-        includeCitations: true,
-      },
-    }),
-  ]);
+  // Build research context from retailers
+  const retailerSearches = (job.retailers || []).slice(0, 5).map(r =>
+    `${r} weekly ad ${job.territory || ''} ${new Date(job.since).toLocaleString('en', { month: 'long', year: 'numeric' })}`.trim()
+  );
+
+  const prompt = `You are a Field Sales Intelligence Assistant helping prepare for account visits.
+
+ACCOUNT CONTEXT:
+- Account ID: ${job.accountId}
+- Period: Since ${job.since}
+- Territory: ${job.territory || 'Not specified'}
+- Retailers: ${job.retailers?.join(', ') || 'None specified'}
+- Stores: ${job.stores?.length || 0} stores
+${job.route?.length ? `- Route Plan: ${job.route.map(s => s.name || s.storeId).join(' → ')}` : ''}
+
+EVIDENCE DOCUMENTS:
+${evidence.map(e => `- ${e}`).join('\n') || 'No evidence documents provided'}
+
+${retailerSearches.length ? `RETAILER RESEARCH (search these for current promotions):
+${retailerSearches.map(q => `- "${q}"`).join('\n')}` : ''}
+
+TASK:
+Generate a comprehensive field sales prep brief with the following sections. Return as JSON.
+
+Required sections:
+1. summary - Executive summary of the account situation
+2. pricingFlags - Any pricing issues or competitive pricing alerts
+3. oosRisks - Out-of-stock risks and inventory concerns
+4. promoOpportunities - Promotional opportunities to discuss
+5. storeTasks - Specific tasks for each store visit
+6. talkingPoints - Key talking points for store manager conversations
+7. attachments - Relevant materials to bring/reference
+8. routePlan - Optimized visit sequence with objectives for each stop
+
+Return JSON with this structure:
+{
+  "summary": "...",
+  "pricingFlags": ["..."],
+  "oosRisks": ["..."],
+  "promoOpportunities": ["..."],
+  "storeTasks": [{"store": "...", "task": "..."}],
+  "talkingPoints": ["..."],
+  "attachments": ["..."],
+  "routePlan": [{"storeId": "...", "name": "...", "objectives": ["..."], "notes": "..."}]
+}`;
 
   job.status = 'chatting';
   job.progress.research = 100;

@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { createTribble, actions } from '@tribble/sdk';
+import { createTribble } from '@tribble/sdk';
 import { setRenderer, fromMarkdown as renderFromMarkdown } from '@tribble/sdk/render';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -100,17 +100,35 @@ async function ingestDocuments(files) {
 }
 
 function planActions(evidenceDocs) {
-  return actions.compose([
-    actions.generate.brief({
-      scope: 'rep-onboarding',
-      period: 'first 2 weeks',
-      audience: 'new enterprise AE in SaaS',
-      goals: ['ramp quickly', 'learn ICP', 'shadow top calls', 'first pipeline'],
-      deliverable: 'structured plan',
-      evidenceDocs,
-      output: { format: 'JSON', fields: ['summary', 'milestones', 'tasks', 'links', 'skills'] },
-    }),
-  ]);
+  return `You are an enablement assistant helping create an onboarding plan for new sales reps.
+
+CONTEXT:
+- Scope: New Enterprise AE Onboarding
+- Period: First 2 weeks
+- Audience: New enterprise Account Executive in SaaS
+- Goals: Ramp quickly, learn ICP, shadow top calls, build first pipeline
+
+EVIDENCE DOCUMENTS:
+${evidenceDocs.map(doc => `- ${doc}`).join('\n') || 'No documents provided'}
+
+TASK:
+Generate a comprehensive onboarding plan based on the evidence documents. Return as JSON with the following structure:
+
+{
+  "summary": "Brief executive summary of the onboarding plan",
+  "milestones": [
+    {"title": "Milestone title", "day": 1, "description": "What should be accomplished"}
+  ],
+  "tasks": [
+    {"title": "Task title", "priority": "high|medium|low", "description": "What to do"}
+  ],
+  "links": [
+    {"title": "Resource name", "url": "URL if available", "description": "Why this is useful"}
+  ],
+  "skills": [
+    "Key skill or competency to develop"
+  ]
+}`;
 }
 
 function toMarkdown(plan) {

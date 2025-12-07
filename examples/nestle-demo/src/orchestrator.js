@@ -1,5 +1,4 @@
 import crypto from 'node:crypto';
-import { actions } from '@tribble/sdk';
 
 /**
  * Orchestrator - Coordinates multi-phase intelligence gathering and brief generation
@@ -240,26 +239,7 @@ export class PrepOrchestrator {
       visitType
     } = context;
 
-    // Use Tribble SDK actions DSL for structured composition
-    return actions.compose([
-      // Core instruction
-      actions.generate.brief({
-        scope: 'nestle-kam-precall-prep',
-        visitType,
-        store: {
-          id: profile.storeId,
-          name: profile.name,
-          retailer: profile.retailer,
-          manager: profile.storeManager,
-          managerPrefs: profile.managerPreferences
-        },
-        context: {
-          lastVisit: visits[0]?.visitDate,
-          visitCount: visits.length,
-          performanceRating: performance.overall
-        },
-        instructions: `
-You are an AI assistant for Nestlé Health Science Key Account Managers (KAMs). Generate a comprehensive pre-call intelligence brief for an upcoming store visit.
+    return `You are an AI assistant for Nestlé Health Science Key Account Managers (KAMs). Generate a comprehensive pre-call intelligence brief for an upcoming store visit.
 
 STORE CONTEXT:
 - Store: ${profile.name} (${profile.storeId})
@@ -267,6 +247,9 @@ STORE CONTEXT:
 - Manager: ${profile.storeManager}
 - Manager Preferences: ${profile.managerPreferences}
 - Visit Type: ${visitType}
+- Last Visit: ${visits[0]?.visitDate || 'N/A'}
+- Total Visits: ${visits.length}
+- Performance Rating: ${performance.overall}
 
 RECENT VISIT HISTORY:
 ${JSON.stringify(visitSummary, null, 2)}
@@ -306,14 +289,7 @@ Return JSON with this structure:
   "visitApproach": "...",
   "anticipatedObjections": ["..."],
   "successMetrics": ["..."]
-}
-`,
-        outputs: {
-          format: 'JSON',
-          maxTokens: 1500
-        }
-      })
-    ]);
+}`;
   }
 
   /**
