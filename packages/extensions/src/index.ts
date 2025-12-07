@@ -90,11 +90,24 @@ export interface BrainClient {
   ): Promise<SearchResult[]>;
 }
 
+/**
+ * Brain search result - matches platform's BrainSearchResult type.
+ */
 export interface SearchResult {
+  /** Unique identifier for the result */
+  id: string;
+  /** The content/text of the result */
   content: string;
-  score: number;
-  metadata: Record<string, unknown>;
-  citations?: Citation[];
+  /** Usage frequency - higher means more frequently used content */
+  usageCount: number;
+  /** Additional metadata about the result */
+  metadata?: {
+    documentId?: number;
+    documentLabel?: string;
+    lastUsage?: string;
+    sourceIndex?: number;
+    [key: string]: unknown;
+  };
 }
 
 /**
